@@ -7,8 +7,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -80,15 +80,10 @@ public class MainActivityFragment extends Fragment {
                     CharSequence text = editText.getText();
                     int duration = Toast.LENGTH_SHORT;
 
-//                    editText.clearFocus();
-//                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-//                            Context.INPUT_METHOD_SERVICE);
-//                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-
-
-                    getActivity().getWindow().setSoftInputMode(
-                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-                    );
+                    //Hides the keyboard after the enter key is pressed.
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
 
                     Toast toast = Toast.makeText(context, text, duration);
