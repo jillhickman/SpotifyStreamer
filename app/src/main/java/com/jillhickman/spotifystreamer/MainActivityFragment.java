@@ -81,6 +81,7 @@ public class MainActivityFragment extends Fragment {
                     int duration = Toast.LENGTH_SHORT;
 
                     //Hides the keyboard after the enter key is pressed.
+//                    http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
                             Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
