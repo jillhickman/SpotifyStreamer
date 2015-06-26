@@ -10,14 +10,19 @@
     tools:context=".MainActivityFragment">
 
     <EditText
+        android:id="@+id/artist_search_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/band_search_edittext" />
+        android:hint="@string/search_hint"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
+        />
 
         <ListView
+            android:id="@+id/listview_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/listview_search">
+            >
 
         </ListView>
 

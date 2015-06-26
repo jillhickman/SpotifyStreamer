@@ -2,4 +2,7 @@
     <string name="app_name">SpotifyStreamer</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <!--Editable text search hint-->
+    <string name="search_hint">Search Artist</string>
 </resources>
