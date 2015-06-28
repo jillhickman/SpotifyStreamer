@@ -109,59 +109,31 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected List<Artist> doInBackground(String... params) {
 
+            //Start the task in the first position
             String artistName = params[0];
+
             //Getting the handle for the SpotifyApi
             SpotifyApi api = new SpotifyApi();
-
-            // Most (but not all) of the Spotify Web API endpoints require authorization.
-            // If you know you'll only use the ones that don't require authorisation you can skip this step
-            // api.setAccessToken("myAccessToken");
 
             //Getting the Spotify Service
             SpotifyService spotify = api.getService();
 
-//            spotify.searchArtists(artistName, new Callback<ArtistsPager>() {
-//                @Override
-//                public void success(ArtistsPager artistsPager, Response response) {
-//
-//                }
-//
-//                @Override
-//                public void failure(RetrofitError error) {
-//
-//                }
-//            });
 
             //Executing the query, searching for artist
             spotify.searchArtists(artistName);
-            ArtistsPager j = spotify.searchArtists(artistName);
-            mArtistList = j.artists.items;
 
-//            spotify.searchArtists(artistName, new Callback<ArtistsPager>() {
-//                @Override
-//                public void success(ArtistsPager artistsPager, Response response) {
-//                    Log.d("ArtistsPager success", artistsPager.toString());
-//
-//                    //Getting the list array from the artistPager, so I can
-//                    //get artist name, SpotifyId, artist thumbnail image.
-//                    mArtistList = artistsPager.artists.items;
-//                    int n =0;
-//                }
-//
-//                @Override
-//                public void failure(RetrofitError error) {
-//                    Log.d("ArtistsPager failure", error.toString());
-//                    //Toast to show that search failed in order to alert the user.
-//                    int duration = Toast.LENGTH_LONG;
-//                    Toast toast = Toast.makeText(getActivity(), "Artist cannot be found, Please search again", duration);
-//                    toast.show();
-//                }
-//            });
+            //Searches and gets artist
+            ArtistsPager artistsPager = spotify.searchArtists(artistName);
+
+            //Sets the mArtistList with the result of the artist searched
+            mArtistList = artistsPager.artists.items;
+
+
             return mArtistList;
         }
 
-//        @Override
         //After doInBackground, call this method to update the view
+        @Override
         protected void onPostExecute(List<Artist> artists) {
             super.onPostExecute(artists);
             mResultAdapter.clear();
