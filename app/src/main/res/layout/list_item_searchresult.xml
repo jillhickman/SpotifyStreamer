@@ -14,17 +14,19 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:src="@drawable/artist"
-        android:paddingRight="8dp"
+        android:scaleType="centerCrop"
         android:background="@color/material_blue_grey_800"
         />
 
     <TextView
         android:id="@+id/list_item_text"
+        android:layout_marginLeft="9dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        tool:text="@string/hello_world"
         android:gravity="center_vertical"
         android:layout_weight="1"
+        tool:text="@string/hello_world"
+
 
 
         />

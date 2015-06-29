@@ -21,7 +21,7 @@ import kaaes.spotify.webapi.android.models.Image;
 public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
     //Array adapter constructor
     public SpotifyArtistAdapter(Context context, List<Artist> objects) {
-        //I need to understand why we don't use resource, pasted from Udacity github
+        //I need to understand why we don't use resource, (pasted from Udacity github)
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
         // the second argument is used when the ArrayAdapter is populating a single TextView.
         // Because this is a custom adapter for two TextViews and an ImageView, the adapter is not
@@ -29,7 +29,7 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
         super(context, 0, objects);
     }
 
-    //Need to overide this method since this is a custom adapter, then set the views
+    //Need to override this method since this is a custom adapter, then set the views
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         //Get the Artist obj from the ArrayAdapter at the appropriate position
