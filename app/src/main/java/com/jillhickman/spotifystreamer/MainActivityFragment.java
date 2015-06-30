@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,12 +118,28 @@ public class MainActivityFragment extends Fragment {
         //After doInBackground, call this method to update the view
         @Override
         protected void onPostExecute(List<Artist> artists) {
+            //If artists is empty or artist is null, display toast
+            if ( artists.isEmpty() || artists == null){
+                Context context = getActivity();
+
+                Toast.makeText(context,R.string.toast_message, Toast.LENGTH_LONG).show();
+
+//                Toast toast = new Toast(context);
+//                toast.setDuration(toast.LENGTH_LONG);
+//                toast.setText(R.string.toast_message);
+//                toast.show();
+
+            }
+            //If artists is not empty, display results
+            else if(artists != null) {
+                mResultAdapter.clear();
+                mResultAdapter.addAll(artists);
+                }
             super.onPostExecute(artists);
-            mResultAdapter.clear();
 
-            mResultAdapter.addAll(artists);
+            }
 
-        }
+
 
     }
 

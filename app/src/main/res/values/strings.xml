@@ -5,4 +5,8 @@
 
     <!--Editable text search hint-->
     <string name="search_hint">Search Artist</string>
+
+    <!--Toast message if not artist is found-->
+    <string name="toast_message">Please Redefine your Search</string>
+
 </resources>

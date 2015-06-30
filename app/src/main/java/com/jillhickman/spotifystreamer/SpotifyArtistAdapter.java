@@ -51,12 +51,16 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
 
         //Get the List of obj images
         List imageObjects = artist.images;
-        //Get one of the images
-        Image imageOfArtist = (Image)imageObjects.get(0);
-        //Get the Url of the image
-        String imageUrl = imageOfArtist.url;
-        //Set picasso to use that Url
-        Picasso.with(getContext()).load(imageUrl).into(artistThumbnailView);
+        //if the imageObject is not empty
+        if (!imageObjects.isEmpty()){
+            //Get one of the images
+            Image imageOfArtist = (Image)imageObjects.get(0);
+            //Get the Url of the image
+            String imageUrl = imageOfArtist.url;
+            //Set picasso to use that Url
+            Picasso.with(getContext()).load(imageUrl).into(artistThumbnailView);
+
+        }
 
         //Getting the handle to the textView
         TextView artistNameView = (TextView) convertView.findViewById(R.id.list_item_text);
