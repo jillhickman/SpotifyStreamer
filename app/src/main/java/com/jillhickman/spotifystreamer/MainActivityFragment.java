@@ -1,6 +1,7 @@
 package com.jillhickman.spotifystreamer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -70,7 +71,7 @@ public class MainActivityFragment extends Fragment {
                     CharSequence artistName = editText.getText();
 
                     //Hides the keyboard after the enter key is pressed.
-                    // reference from http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+                    //reference from http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
                             Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
@@ -90,10 +91,9 @@ public class MainActivityFragment extends Fragment {
                 //Getting the handle for the Artist obj in the appropriate position
                 Artist artist= mResultAdapter.getItem(position);
 
-                //Explicit intent to take to TopTenTracksActivity and pass in weather forecast
-//                Intent intent = new Intent(getActivity(), TopTenTracksActivity.class)
-//                        .putExtra("REAL_DATA", forecast);
-//                startActivity(intent);
+                //Explicit intent to take to TopTenTracksActivity
+                Intent intent = new Intent(getActivity(), TopTenTracksActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -141,11 +141,6 @@ public class MainActivityFragment extends Fragment {
 
                 Toast.makeText(context,R.string.toast_message, Toast.LENGTH_LONG).show();
 
-//                Toast toast = new Toast(context);
-//                toast.setDuration(toast.LENGTH_LONG);
-//                toast.setText(R.string.toast_message);
-//                toast.show();
-
             }
             //If artists is not empty, display results
             else if(artists != null) {
@@ -155,8 +150,6 @@ public class MainActivityFragment extends Fragment {
             super.onPostExecute(artists);
 
             }
-
-
 
     }
 
