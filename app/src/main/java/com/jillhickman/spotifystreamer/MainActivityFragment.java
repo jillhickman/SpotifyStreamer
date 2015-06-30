@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -78,6 +79,22 @@ public class MainActivityFragment extends Fragment {
                     new FindArtistTask().execute(artistName.toString());
                 }
                 return handled;
+            }
+        });
+
+        //Use setItemClickListener to show detail view when click on day
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //Getting the handle for the Artist obj in the appropriate position
+                Artist artist= mResultAdapter.getItem(position);
+
+                //Explicit intent to take to TopTenTracksActivity and pass in weather forecast
+//                Intent intent = new Intent(getActivity(), TopTenTracksActivity.class)
+//                        .putExtra("REAL_DATA", forecast);
+//                startActivity(intent);
+
             }
         });
         return rootView;

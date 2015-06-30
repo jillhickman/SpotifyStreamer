@@ -32,7 +32,7 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
     //Need to override this method since this is a custom adapter, then set the views
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //Get the Artist obj from the ArrayAdapter at the appropriate position
+        //Getting the handle for the Artist obj from the ArrayAdapter at the appropriate position
         Artist artist = getItem(position);
 
         // Adapters recycle views to AdapterViews.<Learning purpose, paste from Udacity github>

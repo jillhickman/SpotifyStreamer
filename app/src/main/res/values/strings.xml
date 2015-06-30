@@ -8,5 +8,6 @@
 
     <!--Toast message if not artist is found-->
     <string name="toast_message">Please Redefine your Search</string>
+    <string name="title_activity_detail">DetailActivity</string>
 
 </resources>
