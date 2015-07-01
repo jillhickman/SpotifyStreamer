@@ -14,6 +14,6 @@ import kaaes.spotify.webapi.android.models.Artist;
  * view is the listview and the adapter.
  */
 public class DataRepo {
-    public static List<Artist> artists = new ArrayList<>();
+    public static final List<Artist> artists = new ArrayList<>();
 
 }
