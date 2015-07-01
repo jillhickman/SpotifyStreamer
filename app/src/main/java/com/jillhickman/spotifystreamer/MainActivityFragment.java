@@ -17,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -40,7 +39,9 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        List starterList = new ArrayList<Artist>();
+        //Get the handle on the empty data array from DataRepo class
+        List starterList = DataRepo.artists;
+
         // Create an ArrayAdapter, it will take data from a source and
         // use it to populate the ListView it's attached to.
         mResultAdapter =
@@ -103,7 +104,7 @@ public class MainActivityFragment extends Fragment {
     //Set up AsyncTask (to start after the user execute the search)
     private class FindArtistTask extends AsyncTask<String, Integer, List<Artist> > {
 
-        //member variable so that we can acess it outside of success method block
+        //member variable so that we can access it
         private List<Artist> mArtistList;
 
         @Override
@@ -144,8 +145,16 @@ public class MainActivityFragment extends Fragment {
             }
             //If artists is not empty, display results
             else if(artists != null) {
-                mResultAdapter.clear();
-                mResultAdapter.addAll(artists);
+
+                //Instead of adding to the adapter, I added outside of the fragment life cycle
+                //so that the fragment does not blow away my data on screen rotation.
+                //Clear array list from the DataRepo, to clear previous search results.
+                //Add the array list from the DataRepo.
+                //Update the adapter that the data has changed.
+                DataRepo.artists.clear();
+                DataRepo.artists.addAll(artists);
+                mResultAdapter.notifyDataSetChanged();
+
                 }
             super.onPostExecute(artists);
 

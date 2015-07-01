@@ -33,7 +33,7 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         //Getting the handle for the Artist obj from the ArrayAdapter at the appropriate position
-        Artist artist = getItem(position);
+        Artist artist = DataRepo.artists.get(position);
 
         // Adapters recycle views to AdapterViews.<Learning purpose, paste from Udacity github>
         // If this is a new View object we're getting, then inflate the layout.
