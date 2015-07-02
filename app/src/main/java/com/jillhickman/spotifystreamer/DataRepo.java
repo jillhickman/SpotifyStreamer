@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.Tracks;
 //import kaaes.spotify.webapi.android.models.Track;
 
 /**
@@ -22,12 +23,18 @@ public class DataRepo {
     //artist obj. Need so that we can get a handle for the subtitle and track query.
     public static Artist topTenTrackArtist = new Artist();
 
+    //tracks obj ArrayList
+    public static final Tracks tracks = new Tracks();
+
+    //Need to initialize the tracks tracks that has the ArrayList
+    //so that we can avoid the null pointer error.
+    public static void initializeTracks(){
+        tracks.tracks = new ArrayList<>();
+    }
+
 }
 
 
 
-//track obj ArrayList
-//public class DataRepo {
-//    public static final List<Track> tracks = new ArrayList<>();
 
-//}
+

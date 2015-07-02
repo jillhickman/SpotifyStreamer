@@ -38,6 +38,8 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Initializing the track obj Arraylist so that we don't get a null pointer.
+        DataRepo.initializeTracks();
 
         //Get the handle on the empty data array from DataRepo class
         List starterList = DataRepo.artists;
@@ -125,8 +127,6 @@ public class MainActivityFragment extends Fragment {
 
 
             //Executing the query, searching for artist
-            spotify.searchArtists(artistName);
-
             //Searches and gets artist
             ArtistsPager artistsPager = spotify.searchArtists(artistName);
 
@@ -141,6 +141,7 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Artist> artists) {
             //If artists is empty or artist is null, display toast
+            //If no artist is found, lets the user know
             if ( artists.isEmpty() || artists == null){
                 Context context = getActivity();
 
