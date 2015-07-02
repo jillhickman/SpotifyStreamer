@@ -70,6 +70,10 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
         //Set the artist textView
         artistNameView.setText(artistName);
 
+        //Getting the handle to the SpotifyID
+        String spotifyId = artist.id;
+
+
         return convertView;
     }
 }

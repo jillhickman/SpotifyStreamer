@@ -84,13 +84,17 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-        //Use setItemClickListener to show detail view when click on day
+        //Use setItemClickListener to show detail view when click on an artist
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 //Getting the handle for the Artist obj in the appropriate position
-                Artist artist= mResultAdapter.getItem(position);
+                //Accessing the DataRepo because that's where the artists list of artist objects.
+                Artist artist= DataRepo.artists.get(position);
+                //Setting the artist that I got from the DataRepo.artists to the topTenTrackArtist
+                //so that I can access the artist for subtitle and track info query.
+                DataRepo.topTenTrackArtist = artist;
 
                 //Explicit intent to take to TopTenTracksActivity
                 Intent intent = new Intent(getActivity(), TopTenTracksActivity.class);
