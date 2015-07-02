@@ -7,9 +7,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -23,6 +25,8 @@ import kaaes.spotify.webapi.android.models.Tracks;
  */
 public class TopTenTracksActivityFragment extends Fragment {
 
+    private SpotifyTracksAdapter mTrackResultAdapter;
+
     public TopTenTracksActivityFragment() {
     }
 
@@ -32,9 +36,24 @@ public class TopTenTracksActivityFragment extends Fragment {
 
         new FindTopTenTrack().execute();
 
+        //Get the handle on the data array from DataRepo class
+        List starterList = DataRepo.trackListHolder.tracks;
+
+        // Create an ArrayAdapter, it will take data from a source and
+        // use it to populate the ListView it's attached to.
+        mTrackResultAdapter =
+                new SpotifyTracksAdapter(
+                        getActivity(), // The current context (this activity)
+                        starterList);//On start up, should have result of top ten tracks
 
 
-        return inflater.inflate(R.layout.fragment_detail, container, false);
+        View rootView= inflater.inflate(R.layout.fragment_detail, container, false);
+
+        //Get reference to the ListView, and attach this adapter to it
+        ListView listView = (ListView) rootView.findViewById(R.id.listview_tracks);
+        listView.setAdapter(mTrackResultAdapter);
+
+        return rootView;
     }
 
     //Set up AsyncTask (to start after the user taps on an artist)
@@ -49,7 +68,7 @@ public class TopTenTracksActivityFragment extends Fragment {
             //Set toTenArtist to the DataRepo topTenTrackArtist.
             Artist topTenArtist = DataRepo.topTenTrackArtist;
             //Set topTenArtistId by drilling into topTenArtist and getting the id.
-            //Need this Id to start a query for top tracks query.
+            //Need this Id to start a query for top trackListHolder query.
             String topTenArtistId = topTenArtist.id;
 
 
@@ -67,10 +86,10 @@ public class TopTenTracksActivityFragment extends Fragment {
             options.put("country", "US");
 
             //Executing the query, searching for Tracks
-            //Searches and gets tracks
+            //Searches and gets trackListHolder
             Tracks tracks = spotify.getArtistTopTrack(topTenArtistId, options);
 
-            //Sets the mTracksList with the result of the tracks searched
+            //Sets the mTracksList with the result of the trackListHolder searched
             mTracksList = tracks;
 
 
@@ -80,15 +99,15 @@ public class TopTenTracksActivityFragment extends Fragment {
         //After doInBackground, call this method to update the view
         @Override
         protected void onPostExecute(Tracks tracks) {
-            //If tracks is empty or tracks is null, display toast. No tracks
+            //If trackListHolder is empty or trackListHolder is null, display toast. No trackListHolder
             //were found for the artist.
             if ( tracks.tracks.isEmpty()|| tracks.tracks == null){
                 Context context = getActivity();
 
-                Toast.makeText(context, R.string.toast_message, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.track_toast_message, Toast.LENGTH_LONG).show();
 
             }
-            //If tracks is not empty, display results
+            //If trackListHolder is not empty, display results
             else if(tracks.tracks != null) {
 
                 //Instead of adding to the adapter, I added outside of the fragment life cycle
@@ -96,9 +115,9 @@ public class TopTenTracksActivityFragment extends Fragment {
                 //Clear array list from the DataRepo, to clear previous search results.
                 //Add the array list from the DataRepo.
                 //Update the adapter that the data has changed.
-                DataRepo.tracks.tracks.clear();
-                DataRepo.tracks.tracks.addAll(tracks.tracks);
-//                mResultAdapter.notifyDataSetChanged();
+                DataRepo.trackListHolder.tracks.clear();
+                DataRepo.trackListHolder.tracks.addAll(tracks.tracks);
+                mTrackResultAdapter.notifyDataSetChanged();
 
             }
             super.onPostExecute(tracks);

@@ -48,7 +48,6 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
 
         //Setting the imageView with artistThumbnail
         //Any time I need to get context in arrayAdapter, can call getContext()
-
         //Get the List of obj images
         List imageObjects = artist.images;
         //if the imageObject is not empty
@@ -69,9 +68,6 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
         String artistName = artist.name;
         //Set the artist textView
         artistNameView.setText(artistName);
-
-        //Getting the handle to the SpotifyID
-        String spotifyId = artist.id;
 
 
         return convertView;

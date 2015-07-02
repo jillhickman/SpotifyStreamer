@@ -26,16 +26,16 @@
         >
 
         <TextView
-            android:id="@+id/list_item_albumtext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tool:text="Album"
-            />
-        <TextView
             android:id="@+id/list_item_tracktext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tool:text="Track"
+            />
+        <TextView
+            android:id="@+id/list_item_albumtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tool:text="Album"
             />
 
 
