@@ -58,7 +58,6 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
             String imageUrl = imageOfArtist.url;
             //Set picasso to use that Url
             Picasso.with(getContext()).load(imageUrl).into(artistThumbnailView);
-
         }
 
         //Getting the handle to the textView
@@ -68,7 +67,6 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
         String artistName = artist.name;
         //Set the artist textView
         artistNameView.setText(artistName);
-
 
         return convertView;
     }

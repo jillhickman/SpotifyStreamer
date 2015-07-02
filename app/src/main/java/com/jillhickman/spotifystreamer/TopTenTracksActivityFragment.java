@@ -46,7 +46,6 @@ public class TopTenTracksActivityFragment extends Fragment {
                         getActivity(), // The current context (this activity)
                         starterList);//On start up, should have result of top ten tracks
 
-
         View rootView= inflater.inflate(R.layout.fragment_detail, container, false);
 
         //Get reference to the ListView, and attach this adapter to it
@@ -71,13 +70,11 @@ public class TopTenTracksActivityFragment extends Fragment {
             //Need this Id to start a query for top trackListHolder query.
             String topTenArtistId = topTenArtist.id;
 
-
             //Getting the handle for the SpotifyApi
             SpotifyApi api = new SpotifyApi();
 
             //Getting the Spotify Service
             SpotifyService spotify = api.getService();
-
 
             //Getting the Map with the key value pairs.
             Map<String, Object> options = new HashMap<>();
@@ -92,7 +89,6 @@ public class TopTenTracksActivityFragment extends Fragment {
             //Sets the mTracksList with the result of the trackListHolder searched
             mTracksList = tracks;
 
-
             return mTracksList;
         }
 
@@ -105,7 +101,6 @@ public class TopTenTracksActivityFragment extends Fragment {
                 Context context = getActivity();
 
                 Toast.makeText(context, R.string.track_toast_message, Toast.LENGTH_LONG).show();
-
             }
             //If trackListHolder is not empty, display results
             else if(tracks.tracks != null) {
@@ -118,14 +113,12 @@ public class TopTenTracksActivityFragment extends Fragment {
                 DataRepo.trackListHolder.tracks.clear();
                 DataRepo.trackListHolder.tracks.addAll(tracks.tracks);
                 mTrackResultAdapter.notifyDataSetChanged();
-
             }
             super.onPostExecute(tracks);
 
         }
 
     }
-
 
 
 }

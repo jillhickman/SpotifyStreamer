@@ -64,8 +64,6 @@ public class SpotifyTracksAdapter extends ArrayAdapter<Track> {
             Picasso.with(getContext()).load(imageUrl).into(albumnArtThumbnail);
         }
 
-
-
         return convertView;
     }
 }
