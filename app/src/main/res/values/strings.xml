@@ -9,7 +9,12 @@
     <!--Toast message if no artist is found-->
     <string name="toast_message">Please Redefine your Search</string>
 
+    <!--Toast message if no tracks are found-->
     <string name="track_toast_message">No tracks found</string>
+
+    <!--Toast message to user that there was error getting the search-->
+    <string name="error_message">Can not seem to get Spotify at this moment</string>
+
     <string name="title_activity_detail">Top 10 Tracks</string>
 
 </resources>

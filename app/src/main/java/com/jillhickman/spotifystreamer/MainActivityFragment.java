@@ -23,6 +23,7 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import retrofit.RetrofitError;
 
 
 /**
@@ -127,11 +128,16 @@ public class MainActivityFragment extends Fragment {
 
 
             //Executing the query, searching for artist
-            //Searches and gets artist
-            ArtistsPager artistsPager = spotify.searchArtists(artistName);
+            //Searches and gets artist, added a try catch for Retrofit error.
+            //Toast message to alert the user that there was a problem
+            try {
+                ArtistsPager artistsPager = spotify.searchArtists(artistName);
 
-            //Sets the mArtistList with the result of the artist searched
-            mArtistList = artistsPager.artists.items;
+                //Sets the mArtistList with the result of the artist searched
+                mArtistList = artistsPager.artists.items;
+            } catch (RetrofitError retrofitError){
+                Toast.makeText(getActivity(), R.string.error_message, Toast.LENGTH_LONG).show();
+            }
 
 
             return mArtistList;
@@ -145,7 +151,7 @@ public class MainActivityFragment extends Fragment {
             if ( artists.isEmpty() || artists == null){
                 Context context = getActivity();
 
-                Toast.makeText(context,R.string.toast_message, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.toast_message, Toast.LENGTH_LONG).show();
 
             }
             //If artists is not empty, display results
