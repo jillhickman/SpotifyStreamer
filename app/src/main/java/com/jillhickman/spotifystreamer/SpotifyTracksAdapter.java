@@ -57,7 +57,17 @@ public class SpotifyTracksAdapter extends ArrayAdapter<Track> {
         //If the imageObject is not empty,
         if (!imageObject.isEmpty()){
             //get one of the images
-            Image imageOfAlbum = (Image)imageObject.get(0);
+            //Grabbing the smallest image for the thumbnail, to use less data
+            //If the image array size is greater than 1, get the image from the last position
+            //else, get it from position 0
+            Image imageOfAlbum;
+
+            if (imageObject.size() >1){
+                imageOfAlbum = (Image) imageObject.get((imageObject.size()-2));
+
+            }else {
+                imageOfAlbum = (Image) imageObject.get(0);
+            }
             //get url of image
             String imageUrl = imageOfAlbum.url;
             //Set picasso to use the Url

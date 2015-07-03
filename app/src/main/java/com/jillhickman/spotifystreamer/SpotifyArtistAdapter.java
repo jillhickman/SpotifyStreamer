@@ -52,8 +52,19 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
         List imageObjects = artist.images;
         //if the imageObject is not empty
         if (!imageObjects.isEmpty()){
+
             //Get one of the images
-            Image imageOfArtist = (Image)imageObjects.get(0);
+            //Grabbing the smallest image for the thumbnail, to use less data
+            //If the image array size is greater than 1, get the image from the last position
+            //else, get it from position 0.
+            Image imageOfArtist;
+
+            if (imageObjects.size() > 1) {
+                  imageOfArtist = (Image) imageObjects.get((imageObjects.size() - 2));
+
+            }else {
+                imageOfArtist = (Image) imageObjects.get(0);
+            }
             //Get the Url of the image
             String imageUrl = imageOfArtist.url;
             //Set picasso to use that Url
