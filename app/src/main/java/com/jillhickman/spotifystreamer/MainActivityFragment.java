@@ -132,7 +132,12 @@ public class MainActivityFragment extends Fragment {
                 //Sets the mArtistList with the result of the artist searched
                 mArtistList = artistsPager.artists.items;
             } catch (RetrofitError retrofitError){
-                Toast.makeText(getActivity(), R.string.error_message, Toast.LENGTH_LONG).show();
+                //Used runOnUiThread when doing toast from background thread
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity(), R.string.error_message, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
 
 
