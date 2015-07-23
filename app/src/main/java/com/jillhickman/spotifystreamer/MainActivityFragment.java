@@ -5,16 +5,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -58,34 +54,60 @@ public class MainActivityFragment extends Fragment {
         ListView listView = (ListView) rootView.findViewById(R.id.listview_search);
         listView.setAdapter(mResultAdapter);
 
-        //Using setOndEditorActionListener to listen for search actionSearch
-        //Getting the artist_search_edittext
-        //By making the editText final, I can use this inside inner classes.
-        final EditText editText = (EditText) rootView.findViewById(R.id.artist_search_edittext);
+        //Get handle for searchView
+        final SearchView mSearchText = (SearchView) rootView.findViewById(R.id.searchView);
 
-        //Taking the editText and listening for input.
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        //Taking the searchView and setOnQueryListener.
+        mSearchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                boolean handled = false;
+
+                Context context = getActivity();
+                //Gets the text from the searchView, so can use Spotify for search
+                CharSequence artistName = mSearchText.getQuery();
+
+                new FindArtistTask().execute(artistName.toString());
+
+                return false;
+            }
 
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    Context context = getActivity();
-                    //Gets the text from the editText, so can use Spotify for search
-                    CharSequence artistName = editText.getText();
-
-                    //Hides the keyboard after the enter key is pressed.
-                    //reference from http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-
-                    handled = true;
-                    new FindArtistTask().execute(artistName.toString());
-                }
-                return handled;
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
+
+//        //Using setOndEditorActionListener to listen for search actionSearch
+//        //Getting the artist_search_edittext
+//        //By making the editText final, I can use this inside inner classes.
+//        final EditText editText = (EditText) rootView.findViewById(R.id.artist_search_edittext);
+
+//        //Taking the editText and listening for input.
+//        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                boolean handled = false;
+//                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//                    Context context = getActivity();
+//                    //Gets the text from the editText, so can use Spotify for search
+//                    CharSequence artistName = editText.getText();
+//
+//                    //Hides the keyboard after the enter key is pressed.
+//                    //reference from http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+//                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+//                            Context.INPUT_METHOD_SERVICE);
+//                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+//
+//                    handled = true;
+//                    new FindArtistTask().execute(artistName.toString());
+//                }
+//                return handled;
+//            }
+//        });
+
+
 
         //Use setItemClickListener to show detail view when click on an artist
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

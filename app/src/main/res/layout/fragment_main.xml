@@ -9,16 +9,24 @@
     android:orientation="vertical"
     tools:context=".MainActivityFragment">
 
-    <EditText
-        android:id="@+id/artist_search_edittext"
+    <!--<EditText-->
+        <!--android:id="@+id/artist_search_edittext"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="@string/search_hint"-->
+        <!--android:inputType="text"-->
+        <!--android:imeOptions="actionSearch"-->
+        <!--/>-->
+
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/search_hint"
         android:inputType="text"
-        android:imeOptions="actionSearch"
         />
 
-        <ListView
+    <ListView
             android:id="@+id/listview_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
