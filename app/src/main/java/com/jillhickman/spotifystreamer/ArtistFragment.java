@@ -25,11 +25,11 @@ import retrofit.RetrofitError;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class ArtistFragment extends Fragment {
 
     private  SpotifyArtistAdapter mResultAdapter;
 
-    public MainActivityFragment() {
+    public ArtistFragment() {
     }
 
     @Override
