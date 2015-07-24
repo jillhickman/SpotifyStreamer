@@ -11,14 +11,16 @@
     This layout is a two-pane layout for the Items master/detail flow.
     -->
 
+    <!--This will always be a static fragment-->
     <fragment
         android:id="@+id/fragment_artist"
         android:name="com.jillhickman.spotifystreamer.ArtistFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="3"
         tools:layout="@android:layout/list_content" />
 
+    <!--This will be a dynamic fragment-->
     <FrameLayout
         android:id="@+id/track_detail_container"
         android:layout_width="0dp"

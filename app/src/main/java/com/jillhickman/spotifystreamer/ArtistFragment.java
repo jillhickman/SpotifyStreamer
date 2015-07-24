@@ -28,6 +28,8 @@ import retrofit.RetrofitError;
 public class ArtistFragment extends Fragment {
 
     private  SpotifyArtistAdapter mResultAdapter;
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
+
 
     public ArtistFragment() {
     }
@@ -95,10 +97,19 @@ public class ArtistFragment extends Fragment {
                 //so that I can access the artist for subtitle and track info query.
                 DataRepo.topTenTrackArtist = artist;
 
-                //Explicit intent to take to TopTenTracksActivity
-                Intent intent = new Intent(getActivity(), TopTenTracksActivity.class);
-                startActivity(intent);
+                //If it is a tablet, show the top ten tracks when list item is clicked by
+                // adding the detail fragment using a fragment transaction.
+                if (DataRepo.tablet == true){
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.track_detail_container, new TopTenTracksActivityFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
 
+                //For phone, launch an intent for new activity
+                }else {
+                    //Explicit intent to take to TopTenTracksActivity
+                    Intent intent = new Intent(getActivity(), TopTenTracksActivity.class);
+                    startActivity(intent);
+                }
             }
         });
         return rootView;

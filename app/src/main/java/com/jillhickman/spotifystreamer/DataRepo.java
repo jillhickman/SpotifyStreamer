@@ -26,6 +26,9 @@ public class DataRepo {
     //trackListHolder obj ArrayList
     public static final Tracks trackListHolder = new Tracks();
 
+    //Boolean, if device is larger than sw600dp...it is a tablet
+    public static boolean tablet;
+
     //Need to initialize the trackListHolder trackListHolder that has the ArrayList
     //so that we can avoid the null pointer error.
     public static void initializeTracks(){

@@ -8,12 +8,22 @@ import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
 
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
             setContentView(R.layout.activity_main);
 
+        if (findViewById(R.id.track_detail_container) != null) {
+            //If it is a tablet, show masterDetail flow
+           DataRepo.tablet = true;
+        }else {
+            //for phone
+            DataRepo.tablet = false;
+        }
     }
 
 
@@ -38,4 +48,5 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
