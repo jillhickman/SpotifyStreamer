@@ -28,8 +28,8 @@ import retrofit.RetrofitError;
 public class ArtistFragment extends Fragment {
 
     private  SpotifyArtistAdapter mResultAdapter;
-    private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
     public ArtistFragment() {
     }
@@ -150,8 +150,6 @@ public class ArtistFragment extends Fragment {
                     }
                 });
             }
-
-
             return mArtistList;
         }
 
@@ -182,7 +180,6 @@ public class ArtistFragment extends Fragment {
             super.onPostExecute(artists);
 
             }
-
     }
 
 }

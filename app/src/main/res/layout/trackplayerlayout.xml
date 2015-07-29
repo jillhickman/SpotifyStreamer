@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:padding="16dp"
+    android:background="@color/background_material_light"
     >
 
     <TextView
@@ -82,20 +83,23 @@
         android:layout_gravity="center"
         >
     <Button
+        android:id="@+id/trackplayer_previous_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:drawable/ic_media_previous"
         />
 
     <Button
-        android:layout_width="0"
+        android:id="@+id/trackplayer_play_button"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:background="@android:drawable/ic_media_play"
         />
 
      <Button
-         android:layout_width="0"
+         android:id="@+id/trackplayer_next_button"
+         android:layout_width="0dp"
          android:layout_height="wrap_content"
          android:layout_weight="1"
          android:background="@android:drawable/ic_media_next"

@@ -3,10 +3,12 @@ package com.jillhickman.spotifystreamer;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,6 +53,19 @@ public class TopTenTracksActivityFragment extends Fragment {
         //Get reference to the ListView, and attach this adapter to it
         ListView listView = (ListView) rootView.findViewById(R.id.listview_tracks);
         listView.setAdapter(mTrackResultAdapter);
+
+        //Use setOnItemClickListener to show dialog fragment when click on track
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //Get instance of the dialog fragment and show with fragment manager.
+                DialogFragment newFragment = new TrackPlayerDialogFragment();
+                newFragment.show(getActivity().getSupportFragmentManager(), TrackPlayerDialogFragment.TAG);
+            }
+        });
+
 
         return rootView;
     }

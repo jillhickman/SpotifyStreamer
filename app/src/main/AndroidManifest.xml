@@ -4,6 +4,11 @@
     //this permission needed for app to perform network access
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--If your player application needs to keep the screen from dimming or the processor from
+    sleeping (for Media Player)-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

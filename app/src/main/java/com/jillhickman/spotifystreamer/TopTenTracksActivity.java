@@ -22,7 +22,6 @@ public class TopTenTracksActivity extends AppCompatActivity {
             //Setting the actionBar subtitle to the artist's name.
             actionBar.setSubtitle(DataRepo.topTenTrackArtist.name);
         }
-
     }
 
     @Override
@@ -46,4 +45,6 @@ public class TopTenTracksActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
