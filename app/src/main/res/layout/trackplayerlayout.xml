@@ -22,6 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:paddingBottom="4dp"
         tool:text = "Album name"
         />
 
@@ -45,6 +46,7 @@
 
     <!--Seek bar layout with begin and end values -->
     <RelativeLayout
+        android:padding="16dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         >

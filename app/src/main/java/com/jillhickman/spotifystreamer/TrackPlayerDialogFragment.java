@@ -9,11 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
+import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.Image;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
@@ -63,6 +65,26 @@ public class TrackPlayerDialogFragment extends DialogFragment{
         //Set picasso to use that Url
         Picasso.with(getActivity()).load(imageUrl).into(albumArtworkView);
 
+        //Getting the handle to the artist name textView
+        TextView artistNameView =  (TextView) v.findViewById(R.id.trackplayer_artist_name);
+        //Getting the handle to the artist name from the DataRepo at selected position
+        Artist topTenArtist = DataRepo.topTenTrackArtist;
+        String artistName = topTenArtist.name;
+
+        //Set textView to the artistName
+        artistNameView.setText(artistName);
+
+        //Getting the handle to the album name textView
+        TextView albumNameView = (TextView) v.findViewById(R.id.trackplayer_albumn_name);
+        String albumName = mSongTrack.album.name;
+        //Set the textView to the album name
+        albumNameView.setText(albumName);
+
+        //Getting the handle to the track name textView
+        TextView  trackNameView = (TextView) v.findViewById(R.id.trackplayer_track_name);
+        String trackName = mSongTrack.name;
+        trackNameView.setText(trackName);
+
         //Getting the handle to the play button
         Button playButton = (Button) v.findViewById(R.id.trackplayer_play_button);
         playButton.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +106,16 @@ public class TrackPlayerDialogFragment extends DialogFragment{
                 }
             }
         });
+
+        //Getting the handle to the pause button
+
+
+        //Getting the handle to the previous button
+
+
+        //Getting the handle to the next button
+
+        //Getting the handle to the seek bar
 
         return v;
     }
