@@ -114,9 +114,9 @@ public class TrackPlayerDialogFragment extends DialogFragment{
         previousButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public  void onClick(View v){
-                //Get the track url for current song playing
-
-//                String songUrl = mSongTrack.preview_url;
+                //Get current position and decrement to next position.
+                mTrackPosition--;
+                goToTrack();
             }
         });
 
@@ -125,7 +125,9 @@ public class TrackPlayerDialogFragment extends DialogFragment{
         nextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v){
-                goNextTrack();
+                //Get current position and increment to next position.
+                mTrackPosition++;
+                goToTrack();
             }
         });
 
@@ -134,15 +136,13 @@ public class TrackPlayerDialogFragment extends DialogFragment{
         return v;
     }
     //Method to go to next track
-    private void goNextTrack(){
+    private void goToTrack(){
         //If current track is playing, stop it.
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
         }
             View v = getView();
 
-            //Get current position and increment to next position.
-            mTrackPosition++;
             //Get handle to the Tracks list
             Tracks allTracks = DataRepo.trackListHolder;
             //Getting the handle for the Track obj in the appropriate position
