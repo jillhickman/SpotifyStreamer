@@ -86,14 +86,15 @@
         android:orientation="horizontal"
         android:layout_gravity="center"
         >
-    <Button
+    <ImageButton
         android:id="@+id/trackplayer_previous_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="25dp"
         android:background="@android:drawable/ic_media_previous"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/trackplayer_play_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -101,11 +102,12 @@
         android:background="@android:drawable/ic_media_play"
         />
 
-     <Button
+     <ImageButton
          android:id="@+id/trackplayer_next_button"
          android:layout_width="0dp"
          android:layout_height="wrap_content"
          android:layout_weight="1"
+         android:layout_marginLeft="25dp"
          android:background="@android:drawable/ic_media_next"
          />
 

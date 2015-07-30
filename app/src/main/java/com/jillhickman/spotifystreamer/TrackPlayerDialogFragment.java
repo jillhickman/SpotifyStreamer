@@ -7,7 +7,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -85,7 +85,7 @@ public class TrackPlayerDialogFragment extends DialogFragment{
         trackNameView.setText(trackName);
 
         //Getting the handle to the play button
-        Button playButton = (Button) v.findViewById(R.id.trackplayer_play_button);
+        ImageButton playButton = (ImageButton) v.findViewById(R.id.trackplayer_play_button);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +110,7 @@ public class TrackPlayerDialogFragment extends DialogFragment{
 
 
         //Getting the handle to the previous button
-        Button previousButton = (Button) v.findViewById(R.id.trackplayer_previous_button);
+        ImageButton previousButton = (ImageButton) v.findViewById(R.id.trackplayer_previous_button);
         previousButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public  void onClick(View v){
@@ -121,7 +121,7 @@ public class TrackPlayerDialogFragment extends DialogFragment{
         });
 
         //Getting the handle to the next button
-        Button nextButton = (Button) v.findViewById(R.id.trackplayer_next_button);
+        ImageButton nextButton = (ImageButton) v.findViewById(R.id.trackplayer_next_button);
         nextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v){
@@ -178,6 +178,13 @@ public class TrackPlayerDialogFragment extends DialogFragment{
             TextView  trackNameView = (TextView) v.findViewById(R.id.trackplayer_track_name);
             String trackName = mSongTrack.name;
             trackNameView.setText(trackName);
+    }
+    private void checkPositon (){
+        if(mTrackPosition == 0){
+            View v = getView();
+            ImageButton previousButton = (ImageButton) v.findViewById(R.id.trackplayer_previous_button);
+//            previousButton.
+        }
     }
 
 }
