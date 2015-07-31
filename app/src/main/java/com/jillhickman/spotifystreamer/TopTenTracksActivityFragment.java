@@ -69,20 +69,6 @@ public class TopTenTracksActivityFragment extends Fragment {
                 DialogFragment newFragment = new TrackPlayerDialogFragment();
                 //Show the new fragment by passing in the activity and fragment manager with Tag.
                 newFragment.show(getActivity().getSupportFragmentManager(), TrackPlayerDialogFragment.TAG);
-
-
-
-
-//                //Setting the bundle for the position of track selected
-//                Bundle args = new Bundle();
-//                args.putInt("song", position);
-//
-//                //Get instance of the dialog fragment and show with fragment manager.
-//                DialogFragment newFragment = new TrackPlayerDialogFragment();
-//
-//                //Setting the arguments to the dialog fragment.
-//                newFragment.setArguments(args);
-//                newFragment.show(getActivity().getSupportFragmentManager(), TrackPlayerDialogFragment.TAG);
             }
         });
         return rootView;

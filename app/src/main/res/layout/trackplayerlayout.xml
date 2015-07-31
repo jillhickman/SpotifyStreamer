@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tool="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="250dp"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_gravity="center"
-    android:padding="8dp"
+    android:paddingBottom="8dp"
     android:background="@color/background_material_light"
     >
 
@@ -14,7 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         tool:text = "Artist name"
         />
 
@@ -24,13 +24,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:paddingBottom="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         tool:text = "Album name"
         />
 
     <ImageView
         android:id="@+id/trackplayer_image"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_gravity="center"
         android:src="@drawable/artist"
         android:scaleType="centerCrop"
@@ -43,12 +45,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:paddingTop="8dp"
+        android:maxLines="1"
+        android:ellipsize="marquee"
         tool:text = "Track name"
         />
 
     <!--Seek bar layout with begin and end values -->
     <RelativeLayout
-        android:padding="16dp"
+        android:padding="8dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         >

@@ -7,6 +7,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,29 +27,12 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
 
     public static final String TAG = "TrackPlayerDialogFragment";
 
-    //Making it a member variable because this holds a songTrack data to display in UI
-//    public Track mSongTrack;
-
-    //Make it a member variable to manipulate the player.
-//    public MyMediaPlayer mMediaPlayer = new MyMediaPlayer();
-
-    //Int position of the track
-//    private int mTrackPosition;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         View v = inflater.inflate(R.layout.trackplayerlayout, container, false);
-
-//        //Bundle from the TopTenTracksActivityFragment with position of track selected.
-//        Bundle mArgs = getArguments();
-//        mTrackPosition = mArgs.getInt("song");
-
-//        //Get handle to the Tracks list
-//        Tracks allTracks = DataRepo.trackListHolder;
-//        //Getting the handle for the Track obj in the appropriate position
-//        mSongTrack= allTracks.tracks.get(DataRepo.positionOfTrack);
 
         //Getting the handle to the imageView
         ImageView albumArtworkView = (ImageView) v.findViewById(R.id.trackplayer_image);
@@ -90,6 +74,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
             }
         });
 
+        //Implement pause button in layout
         //Getting the handle to the pause button
 
 
@@ -98,7 +83,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         previousButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public  void onClick(View v){
-                //Get current position and decrement to next position.
+                //Get current position and decrement to previous position.
                 DataRepo.positionOfTrack--;
                 goToTrack();
             }
@@ -120,7 +105,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         return v;
     }
 
-
+    //Preparing the track so that it can be ready to play. Called when user pushes play.
     private void prepareToPlay(){
         //Get the track url for the song.
         String songUrl = DataRepo.trackListHolder.tracks.get(DataRepo.positionOfTrack).preview_url;
@@ -133,16 +118,10 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         try {
             DataRepo.MyMediaPlayer.reset();
             DataRepo.MyMediaPlayer.setDataSource(url);
+            //
             DataRepo.MyMediaPlayer.setOnPreparedListener(this);
-//                    DataRepo.MyMediaPlayer.setOnPreparedListener(new MyMediaPlayer.OnPreparedListener() {
-//
-//                        @Override
-//                        public void onPrepared(MyMediaPlayer player) {
-//                            player.start();
-//                        }
-//
-//                    });
-            DataRepo.MyMediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+            //Calling prepareAsync so it can do the work on a background thread
+            DataRepo.MyMediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -202,13 +181,21 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
     }
 
     @Override
+    public void onResume() {
+        int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.popup_height);
+        getDialog().getWindow().setLayout(width, height);
+        super.onResume();
+    }
+
+    @Override
     public void onDestroyView() {
         if (getDialog() != null && getRetainInstance())
             getDialog().setOnDismissListener(null);
         super.onDestroyView();
     }
 
-    //When prepareAsync is done, call this method.
+    //When prepareAsync is done, in the PrepareToPlay, call this method.
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
