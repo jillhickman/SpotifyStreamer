@@ -38,7 +38,7 @@ public class ArtistFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Initializing the track obj Arraylist so that we don't get a null pointer.
-        DataRepo.initializeTracks();
+        DataRepo.initialize();
 
         //Get the handle on the empty data array from DataRepo class
         List starterList = DataRepo.artists;

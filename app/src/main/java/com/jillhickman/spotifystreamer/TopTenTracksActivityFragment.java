@@ -29,7 +29,6 @@ public class TopTenTracksActivityFragment extends Fragment {
 
     private SpotifyTracksAdapter mTrackResultAdapter;
 
-    //member variable so that we can access it
     private Tracks mTracksList;
 
     public TopTenTracksActivityFragment() {
@@ -63,16 +62,27 @@ public class TopTenTracksActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //Setting the bundle for the position of track selected
-                Bundle args = new Bundle();
-                args.putInt("song", position);
+                //Getting the position of the track from the DataRepo
+                DataRepo.positionOfTrack = position;
 
                 //Get instance of the dialog fragment and show with fragment manager.
                 DialogFragment newFragment = new TrackPlayerDialogFragment();
-
-                //Setting the arguments to the dialog fragment.
-                newFragment.setArguments(args);
+                //Show the new fragment by passing in the activity and fragment manager with Tag.
                 newFragment.show(getActivity().getSupportFragmentManager(), TrackPlayerDialogFragment.TAG);
+
+
+
+
+//                //Setting the bundle for the position of track selected
+//                Bundle args = new Bundle();
+//                args.putInt("song", position);
+//
+//                //Get instance of the dialog fragment and show with fragment manager.
+//                DialogFragment newFragment = new TrackPlayerDialogFragment();
+//
+//                //Setting the arguments to the dialog fragment.
+//                newFragment.setArguments(args);
+//                newFragment.show(getActivity().getSupportFragmentManager(), TrackPlayerDialogFragment.TAG);
             }
         });
         return rootView;

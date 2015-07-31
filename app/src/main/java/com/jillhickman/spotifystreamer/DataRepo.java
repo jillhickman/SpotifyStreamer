@@ -1,5 +1,7 @@
 package com.jillhickman.spotifystreamer;
 
+import android.media.MediaPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +28,20 @@ public class DataRepo {
     //trackListHolder obj ArrayList
     public static final Tracks trackListHolder = new Tracks();
 
+    //MyMediaPlayer obj. Need so we can access in dialog fragment
+    public static MediaPlayer MyMediaPlayer = new MediaPlayer();
+
+    //Position of track in track array
+    public static int positionOfTrack;
+
     //Boolean, if device is larger than sw600dp...it is a tablet
     public static boolean tablet;
 
     //Need to initialize the trackListHolder trackListHolder that has the ArrayList
     //so that we can avoid the null pointer error.
-    public static void initializeTracks(){
+    public static void initialize() {
         trackListHolder.tracks = new ArrayList<>();
     }
-
 }
 
 
