@@ -29,9 +29,13 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //Gets rid of the title in the layout for this dialog fragment.
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         View v = inflater.inflate(R.layout.trackplayerlayout, container, false);
+
+        prepareToPlay();
 
         //Getting the handle to the imageView
         ImageView albumArtworkView = (ImageView) v.findViewById(R.id.trackplayer_image);
@@ -44,7 +48,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         Picasso.with(getActivity()).load(imageUrl).into(albumArtworkView);
 
         //Getting the handle to the artist name textView
-        TextView artistNameView =  (TextView) v.findViewById(R.id.trackplayer_artist_name);
+        TextView artistNameView = (TextView) v.findViewById(R.id.trackplayer_artist_name);
         //Getting the handle to the artist name from the SpotifyStreamerApplication at selected position
         Artist topTenArtist = SpotifyStreamerApplication.topTenTrackArtist;
         String artistName = topTenArtist.name;
@@ -59,18 +63,25 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         albumNameView.setText(albumName);
 
         //Getting the handle to the track name textView
-        TextView  trackNameView = (TextView) v.findViewById(R.id.trackplayer_track_name);
+        TextView trackNameView = (TextView) v.findViewById(R.id.trackplayer_track_name);
         String trackName = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).name;
         trackNameView.setText(trackName);
 
         //Getting the handle to the play button
-        ImageButton playButton = (ImageButton) v.findViewById(R.id.trackplayer_play_button);
+        final ImageButton playButton = (ImageButton) v.findViewById(R.id.trackplayer_play_button);
+        playButton.setEnabled(false);
         playButton.setOnClickListener(new View.OnClickListener() {
 
             //Call prepareToPlay so that music can be streamed in the background thread.
             @Override
             public void onClick(View v) {
-                prepareToPlay();
+                if(playButton.isSelected()== true){
+                    SpotifyStreamerApplication.MyMediaPlayer.pause();
+                    playButton.setSelected(false);
+                }else{
+                    SpotifyStreamerApplication.MyMediaPlayer.start();
+                    playButton.setSelected(true);
+                }
             }
         });
 
@@ -80,9 +91,9 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
 
         //Getting the handle to the previous button
         ImageButton previousButton = (ImageButton) v.findViewById(R.id.trackplayer_previous_button);
-        previousButton.setOnClickListener(new View.OnClickListener(){
+        previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public  void onClick(View v){
+            public void onClick(View v) {
                 //Get current position and decrement to previous position.
                 SpotifyStreamerApplication.positionOfTrack--;
                 goToTrack();
@@ -91,9 +102,9 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
 
         //Getting the handle to the next button
         ImageButton nextButton = (ImageButton) v.findViewById(R.id.trackplayer_next_button);
-        nextButton.setOnClickListener(new View.OnClickListener(){
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View v){
+            public void onClick(View v) {
                 //Get current position and increment to next position.
                 SpotifyStreamerApplication.positionOfTrack++;
                 goToTrack();
@@ -106,7 +117,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
     }
 
     //Preparing the track so that it can be ready to play. Called when user pushes play.
-    private void prepareToPlay(){
+    private void prepareToPlay() {
         //Get the track url for the song.
         String songUrl = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).preview_url;
 
@@ -128,51 +139,67 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
     }
 
     //Method to go to next track
-    private void goToTrack(){
+    private void goToTrack() {
+        View v = getView();
+        ImageButton playButton = (ImageButton) v.findViewById(R.id.trackplayer_play_button);
+
         //If current track is playing, stop it.
         if (SpotifyStreamerApplication.MyMediaPlayer.isPlaying()) {
             SpotifyStreamerApplication.MyMediaPlayer.stop();
         }
-            View v = getView();
 
-            //Update the whole view to the new track
-            //Getting the handle to the imageView
-            ImageView albumArtworkView = (ImageView) v.findViewById(R.id.trackplayer_image);
-            //Get the album image for the song in the 0 position.
-            Image imageOfAlbumArtwork = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).album.images.get(0);
+        //disabled play button is shown
+        playButton.setEnabled(false);
+        //It is a selected state of disable play button until the music is ready.
+        playButton.setSelected(false);
+        prepareToPlay();
 
-            //Get the Url of the image
-            String imageUrl = imageOfAlbumArtwork.url;
-            //Set picasso to use that Url
-            Picasso.with(getActivity()).load(imageUrl).into(albumArtworkView);
+        //Update the whole view to the new track
+        //Getting the handle to the imageView
+        ImageView albumArtworkView = (ImageView) v.findViewById(R.id.trackplayer_image);
+        //Get the album image for the song in the 0 position.
+        Image imageOfAlbumArtwork = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).album.images.get(0);
 
-            //Getting the handle to the artist name textView
-            TextView artistNameView =  (TextView) v.findViewById(R.id.trackplayer_artist_name);
-            //Getting the handle to the artist name from the SpotifyStreamerApplication at selected position
-            Artist topTenArtist = SpotifyStreamerApplication.topTenTrackArtist;
-            String artistName = topTenArtist.name;
+        //Get the Url of the image
+        String imageUrl = imageOfAlbumArtwork.url;
+        //Set picasso to use that Url
+        Picasso.with(getActivity()).load(imageUrl).into(albumArtworkView);
 
-            //Set textView to the artistName
-            artistNameView.setText(artistName);
+        //Getting the handle to the artist name textView
+        TextView artistNameView = (TextView) v.findViewById(R.id.trackplayer_artist_name);
+        //Getting the handle to the artist name from the SpotifyStreamerApplication at selected position
+        Artist topTenArtist = SpotifyStreamerApplication.topTenTrackArtist;
+        String artistName = topTenArtist.name;
 
-            //Getting the handle to the album name textView
-            TextView albumNameView = (TextView) v.findViewById(R.id.trackplayer_albumn_name);
-            String albumName = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).album.name;
-            //Set the textView to the album name
-            albumNameView.setText(albumName);
+        //Set textView to the artistName
+        artistNameView.setText(artistName);
 
-            //Getting the handle to the track name textView
-            TextView  trackNameView = (TextView) v.findViewById(R.id.trackplayer_track_name);
-            String trackName = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).name;
-            trackNameView.setText(trackName);
+        //Getting the handle to the album name textView
+        TextView albumNameView = (TextView) v.findViewById(R.id.trackplayer_albumn_name);
+        String albumName = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).album.name;
+        //Set the textView to the album name
+        albumNameView.setText(albumName);
+
+        //Getting the handle to the track name textView
+        TextView trackNameView = (TextView) v.findViewById(R.id.trackplayer_track_name);
+        String trackName = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).name;
+        trackNameView.setText(trackName);
     }
+
     //Method to check position so that previous and next buttons don't go out of bounds.
-    private void checkPositon (){
-        if(SpotifyStreamerApplication.positionOfTrack == 0){
+    private void checkPositon() {
+        if (SpotifyStreamerApplication.positionOfTrack == 0) {
             View v = getView();
             ImageButton previousButton = (ImageButton) v.findViewById(R.id.trackplayer_previous_button);
 //            previousButton.
         }
+    }
+
+    public void pausePlay() {
+        //Get the media player, tell is to pause, set that play button to not be selected
+        SpotifyStreamerApplication.MyMediaPlayer.pause();
+        ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
+        playButton.setSelected(false);
     }
 
     @Override
@@ -193,7 +220,11 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
     //When prepareAsync is done, call this method so that the playButton can play music
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mp.start();
+//        mp.start();
+        ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
+        playButton.setEnabled(true);
+//        playButton.setSelected(true);
+
     }
 }
 

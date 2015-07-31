@@ -48,6 +48,7 @@ public class SpotifyStreamerApplication extends Application{
     @Override
     public void onCreate() {
         //Initializing the track obj Arraylist so that we don't get a null pointer.
+        //This is called before the onCreateView in the main activity
         super.onCreate();
         initialize();
     }
