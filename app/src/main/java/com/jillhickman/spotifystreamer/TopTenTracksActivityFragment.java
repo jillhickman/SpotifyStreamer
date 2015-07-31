@@ -40,8 +40,8 @@ public class TopTenTracksActivityFragment extends Fragment {
 
         new FindTopTenTrack().execute();
 
-        //Get the handle on the data array from DataRepo class
-        List starterList = DataRepo.trackListHolder.tracks;
+        //Get the handle on the data array from SpotifyStreamerApplication class
+        List starterList = SpotifyStreamerApplication.trackListHolder.tracks;
 
         // Create an ArrayAdapter, it will take data from a source and
         // use it to populate the ListView it's attached to.
@@ -62,8 +62,8 @@ public class TopTenTracksActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //Getting the position of the track from the DataRepo
-                DataRepo.positionOfTrack = position;
+                //Getting the position of the track from the SpotifyStreamerApplication
+                SpotifyStreamerApplication.positionOfTrack = position;
 
                 //Get instance of the dialog fragment and show with fragment manager.
                 DialogFragment newFragment = new TrackPlayerDialogFragment();
@@ -80,8 +80,8 @@ public class TopTenTracksActivityFragment extends Fragment {
         @Override
         protected Tracks doInBackground(String... params) {
 
-            //Set toTenArtist to the DataRepo topTenTrackArtist.
-            Artist topTenArtist = DataRepo.topTenTrackArtist;
+            //Set toTenArtist to the SpotifyStreamerApplication topTenTrackArtist.
+            Artist topTenArtist = SpotifyStreamerApplication.topTenTrackArtist;
             //Set topTenArtistId by drilling into topTenArtist and getting the id.
             //Need this Id to start a query for top trackListHolder query.
             String topTenArtistId = topTenArtist.id;
@@ -123,11 +123,11 @@ public class TopTenTracksActivityFragment extends Fragment {
 
                 //Instead of adding to the adapter, I added outside of the fragment life cycle
                 //so that the fragment does not blow away my data on screen rotation.
-                //Clear array list from the DataRepo, to clear previous search results.
-                //Add the array list from the DataRepo.
+                //Clear array list from the SpotifyStreamerApplication, to clear previous search results.
+                //Add the array list from the SpotifyStreamerApplication.
                 //Update the adapter that the data has changed.
-                DataRepo.trackListHolder.tracks.clear();
-                DataRepo.trackListHolder.tracks.addAll(tracks.tracks);
+                SpotifyStreamerApplication.trackListHolder.tracks.clear();
+                SpotifyStreamerApplication.trackListHolder.tracks.addAll(tracks.tracks);
                 mTrackResultAdapter.notifyDataSetChanged();
             }
             super.onPostExecute(tracks);

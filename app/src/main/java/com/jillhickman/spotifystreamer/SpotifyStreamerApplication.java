@@ -1,5 +1,6 @@
 package com.jillhickman.spotifystreamer;
 
+import android.app.Application;
 import android.media.MediaPlayer;
 
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ import kaaes.spotify.webapi.android.models.Tracks;
  * view is the listview and the adapter.
  */
 
-public class DataRepo {
+public class SpotifyStreamerApplication extends Application{
+
     //artists obj ArrayList
     public static final List<Artist> artists = new ArrayList<>();
 
@@ -39,8 +41,15 @@ public class DataRepo {
 
     //Need to initialize the trackListHolder trackListHolder that has the ArrayList
     //so that we can avoid the null pointer error.
-    public static void initialize() {
+    private static void initialize() {
         trackListHolder.tracks = new ArrayList<>();
+    }
+
+    @Override
+    public void onCreate() {
+        //Initializing the track obj Arraylist so that we don't get a null pointer.
+        super.onCreate();
+        initialize();
     }
 }
 

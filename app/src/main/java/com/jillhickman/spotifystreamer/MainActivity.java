@@ -19,10 +19,10 @@ public class MainActivity extends ActionBarActivity {
 
         if (findViewById(R.id.track_detail_container) != null) {
             //If it is a tablet, show masterDetail flow
-           DataRepo.tablet = true;
+           SpotifyStreamerApplication.tablet = true;
         }else {
             //for phone
-            DataRepo.tablet = false;
+            SpotifyStreamerApplication.tablet = false;
         }
     }
 

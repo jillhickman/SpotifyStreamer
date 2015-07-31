@@ -28,7 +28,7 @@ public class SpotifyTracksAdapter extends ArrayAdapter<Track> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         //Getting one track for one row for the listView from the ArrayAdapter.
-        Track track = DataRepo.trackListHolder.tracks.get(position);
+        Track track = SpotifyStreamerApplication.trackListHolder.tracks.get(position);
 
         //Adapter recycle views to the AdapterViews
         //New view so have to inflate the layout.

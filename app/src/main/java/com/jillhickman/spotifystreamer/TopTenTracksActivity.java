@@ -20,7 +20,7 @@ public class TopTenTracksActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             //Getting the handle for the artist name for the artist
             //Setting the actionBar subtitle to the artist's name.
-            actionBar.setSubtitle(DataRepo.topTenTrackArtist.name);
+            actionBar.setSubtitle(SpotifyStreamerApplication.topTenTrackArtist.name);
         }
     }
 
