@@ -2,11 +2,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_selected="true"
-        android:drawable="@drawable/pause"/>
+        android:drawable="@drawable/rw"/>
 
     <item android:state_enabled="false"
-        android:drawable="@drawable/play_disabled"/>
+        android:drawable="@drawable/rw_disabled"/>
 
-    <item android:drawable="@drawable/play" />
+    <item android:drawable="@drawable/rw_default"/><!-- default -->
 
 </selector>

@@ -35,6 +35,16 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
 
         View v = inflater.inflate(R.layout.trackplayerlayout, container, false);
 
+//        final LinearLayout linearLayout = (LinearLayout) v.findViewById(R.id.trackplayer_root_layout);
+//        linearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            public void onGlobalLayout() {
+//                linearLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//            }
+//        });
+
+        checkPositonIsValid(v);
+
+        //Call prepareToPlay so that music can be streamed in the background thread.
         prepareToPlay();
 
         //Getting the handle to the imageView
@@ -67,27 +77,26 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         String trackName = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).name;
         trackNameView.setText(trackName);
 
-        //Getting the handle to the play button
+        //Getting the handle to the playButton
         final ImageButton playButton = (ImageButton) v.findViewById(R.id.trackplayer_play_button);
+        //Shows disabled_play button
         playButton.setEnabled(false);
         playButton.setOnClickListener(new View.OnClickListener() {
 
-            //Call prepareToPlay so that music can be streamed in the background thread.
             @Override
             public void onClick(View v) {
+                //If play button is selected, and playing music..pause it
+                //Show Play button
                 if(playButton.isSelected()== true){
                     SpotifyStreamerApplication.MyMediaPlayer.pause();
                     playButton.setSelected(false);
                 }else{
+                    //Else, start the music, and show the Pause button
                     SpotifyStreamerApplication.MyMediaPlayer.start();
                     playButton.setSelected(true);
                 }
             }
         });
-
-        //Implement pause button in layout
-        //Getting the handle to the pause button
-
 
         //Getting the handle to the previous button
         ImageButton previousButton = (ImageButton) v.findViewById(R.id.trackplayer_previous_button);
@@ -96,6 +105,8 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
             public void onClick(View v) {
                 //Get current position and decrement to previous position.
                 SpotifyStreamerApplication.positionOfTrack--;
+                //Check position, previous or next button should show or be disabled
+                checkPositonIsValid(getView());
                 goToTrack();
             }
         });
@@ -107,6 +118,8 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
             public void onClick(View v) {
                 //Get current position and increment to next position.
                 SpotifyStreamerApplication.positionOfTrack++;
+                //Check position, previous or next button should show or be disabled
+                checkPositonIsValid(getView());
                 goToTrack();
             }
         });
@@ -148,10 +161,12 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
             SpotifyStreamerApplication.MyMediaPlayer.stop();
         }
 
-        //disabled play button is shown
+        //Shows play_disabled button
         playButton.setEnabled(false);
-        //It is a selected state of disable play button until the music is ready.
+        //It is a selected state of play_disabled button until the music is ready.
         playButton.setSelected(false);
+
+        //Call prepareToPlay so that music can be streamed in the background thread.
         prepareToPlay();
 
         //Update the whole view to the new track
@@ -187,11 +202,25 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
     }
 
     //Method to check position so that previous and next buttons don't go out of bounds.
-    private void checkPositon() {
-        if (SpotifyStreamerApplication.positionOfTrack == 0) {
-            View v = getView();
-            ImageButton previousButton = (ImageButton) v.findViewById(R.id.trackplayer_previous_button);
-//            previousButton.
+    private void checkPositonIsValid(View v) {
+        ImageButton previousButton = (ImageButton) v.findViewById(R.id.trackplayer_previous_button);
+        ImageButton nextButton = (ImageButton) v.findViewById(R.id.trackplayer_next_button);
+
+        previousButton.setEnabled(true);
+        previousButton.setSelected(true);
+        nextButton.setEnabled(true);
+        nextButton.setSelected(true);
+
+        //If at 0 position or array size is less or equal to 1, disable previous button
+        if(SpotifyStreamerApplication.positionOfTrack == 0 || (SpotifyStreamerApplication.trackListHolder.tracks).size() <= 1){
+            previousButton.setEnabled(false);
+            previousButton.setSelected(false);
+        }
+        //If array size is less or equal to 1 or array size +1 is greater or equal to array size
+        //disable next button
+        if((SpotifyStreamerApplication.trackListHolder.tracks).size() <= 1 || ((SpotifyStreamerApplication.positionOfTrack+1 >= (SpotifyStreamerApplication.trackListHolder.tracks).size()))){
+            nextButton.setEnabled(false);
+            nextButton.setSelected(false);
         }
     }
 
@@ -199,9 +228,11 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         //Get the media player, tell is to pause, set that play button to not be selected
         SpotifyStreamerApplication.MyMediaPlayer.pause();
         ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
+        //Shows play button
         playButton.setSelected(false);
     }
 
+    //Hard codes the dialog fragment to this width and height
     @Override
     public void onResume() {
         int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
@@ -220,10 +251,9 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
     //When prepareAsync is done, call this method so that the playButton can play music
     @Override
     public void onPrepared(MediaPlayer mp) {
-//        mp.start();
         ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
+        //Shows playButton
         playButton.setEnabled(true);
-//        playButton.setSelected(true);
 
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/trackplayer_root_layout"
     android:layout_width="250dp"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -95,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="25dp"
-        android:background="@android:drawable/ic_media_previous"
+        android:background="@drawable/previous_button_selector"
         />
 
     <ImageButton
@@ -112,7 +113,7 @@
          android:layout_height="wrap_content"
          android:layout_weight="1"
          android:layout_marginLeft="25dp"
-         android:background="@android:drawable/ic_media_next"
+         android:background="@drawable/next_button_selector"
          />
 
     </LinearLayout>
