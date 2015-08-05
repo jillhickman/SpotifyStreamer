@@ -1,8 +1,11 @@
 package com.jillhickman.spotifystreamer;
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +18,38 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.Image;
 
 /**
  * Created by jillhickman on 7/27/15.
  */
-public class TrackPlayerDialogFragment extends DialogFragment implements MediaPlayer.OnPreparedListener {
+public class TrackPlayerDialogFragment extends DialogFragment {
 
     public static final String TAG = "TrackPlayerDialogFragment";
 
+    MyService mService;
+
+    boolean mBound = false;
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            MyService.LocalBinder binder = (MyService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            mService.setUrl(SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).preview_url);
+            mService.play();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+
+            mBound = false;
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,11 +60,8 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
 
         View v = inflater.inflate(R.layout.trackplayerlayout, container, false);
 
-        //To update if previous or next button should be disabled
+        //Check to see if previous or next button should be disabled
         checkPositonIsValid(v);
-
-        //Call prepareToPlay so that music can be streamed in the background thread.
-        prepareToPlay();
 
         //Getting the handle to the imageView
         ImageView albumArtworkView = (ImageView) v.findViewById(R.id.trackplayer_image);
@@ -75,22 +95,25 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
 
         //Getting the handle to the playButton
         final ImageButton playButton = (ImageButton) v.findViewById(R.id.trackplayer_play_button);
-        //Shows disabled_play button
-        playButton.setEnabled(false);
+        //Shows pause button
+        playButton.setSelected(true);
+
         playButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                //If play button is selected, and playing music..pause it
-                //Show Play button
-                if(playButton.isSelected()== true){
-                    SpotifyStreamerApplication.MyMediaPlayer.pause();
+                //If music is playing, show the pause button
+                if (mService.isPlaying()) {
+                    mService.pause();
                     playButton.setSelected(false);
-                }else{
-                    //Else, start the music, and show the Pause button
-                    SpotifyStreamerApplication.MyMediaPlayer.start();
+                    playButton.setEnabled(true);
+                }else {
+                //If music is paused, show the play button
+                    mService.resume();
                     playButton.setSelected(true);
                 }
+
+
             }
         });
 
@@ -131,44 +154,20 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         return v;
     }
 
-    //Preparing the track so that it can be ready to play. Called when user pushes play.
-    private void prepareToPlay() {
-        //Get the track url for the song.
-        String songUrl = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).preview_url;
-
-        //Streaming with Media player, got code from Media Playback API Guide
-        //http://developer.android.com/guide/topics/media/mediaplayer.html#mediaplayer
-        SpotifyStreamerApplication.MyMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        try {
-            SpotifyStreamerApplication.MyMediaPlayer.reset();
-            SpotifyStreamerApplication.MyMediaPlayer.setDataSource(songUrl);
-            //Set a listener to know when prepareAsync is done
-            SpotifyStreamerApplication.MyMediaPlayer.setOnPreparedListener(this);
-            //Calling prepareAsync so it can do the work on a background thread
-            SpotifyStreamerApplication.MyMediaPlayer.prepareAsync();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     //Method to go to next track
     private void goToTrack() {
         View v = getView();
         ImageButton playButton = (ImageButton) v.findViewById(R.id.trackplayer_play_button);
 
         //If current track is playing, stop it.
-        if (SpotifyStreamerApplication.MyMediaPlayer.isPlaying()) {
-            SpotifyStreamerApplication.MyMediaPlayer.stop();
-        }
+        mService.stop();
 
-        //Shows play_disabled button
-        playButton.setEnabled(false);
-        //It is a selected state of play_disabled button until the music is ready.
-        playButton.setSelected(false);
+        //Shows pause button
+        playButton.setSelected(true);
 
-        //Call prepareToPlay so that music can be streamed in the background thread.
-        prepareToPlay();
+        //Set url and play
+        mService.setUrl(SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).preview_url);
+        mService.play();
 
         //Update the whole view to the new track
         //Getting the handle to the imageView
@@ -225,20 +224,13 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         }
     }
 
-    public void pausePlay() {
-        //Get the media player, tell is to pause, set that play button to not be selected
-        SpotifyStreamerApplication.MyMediaPlayer.pause();
-        ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
-        //Shows play button
-        playButton.setSelected(false);
-    }
-
-    //Hard coded the dialog fragment to this width and height
     @Override
     public void onResume() {
+        //Hard coded the dialog fragment to this width and height
         int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
         int height = getResources().getDimensionPixelSize(R.dimen.popup_height);
         getDialog().getWindow().setLayout(width, height);
+
         super.onResume();
     }
 
@@ -249,14 +241,22 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         super.onDestroyView();
     }
 
-    //When prepareAsync is done, call this method so that the playButton can play music
     @Override
-    public void onPrepared(MediaPlayer mp) {
-        ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
-        //Shows play button
-        playButton.setEnabled(true);
-
+    public void onStart() {
+        super.onStart();
+        // Bind to LocalService
+        Intent intent = new Intent(getActivity(), MyService.class);
+        getActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        // Unbind from the service
+        if (mBound) {
+            getActivity().unbindService(mConnection);
+            mBound = false;
+        }
+    }
 }
 

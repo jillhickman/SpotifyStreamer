@@ -7,14 +7,14 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+
     MyService mService;
+
     boolean mBound = false;
 
     private ServiceConnection mConnection;
@@ -45,8 +45,6 @@ public class MainActivity extends ActionBarActivity {
         startService(intent);
 
 
-
-
         setContentView(R.layout.activity_main);
 
         if (findViewById(R.id.track_detail_container) != null) {
@@ -58,33 +56,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            if (mBound) {
-//                mService.playSong();
-                mService.setUrl("https://p.scdn.co/mp3-preview/e8c8720e4e8026413748263e9ce889aa9c58fe2f");
-                mService.play();
-            }
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -102,5 +73,4 @@ public class MainActivity extends ActionBarActivity {
             mBound = false;
         }
     }
-
 }

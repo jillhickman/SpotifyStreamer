@@ -16,51 +16,22 @@ import java.io.IOException;
 public class MyService extends Service implements MediaPlayer.OnPreparedListener{
 
     public static String TAG = "MyService";
+
     public static String mUrl;
 
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
+
     //MyMediaPlayer obj. Need so we can access in dialog fragment
     public static MediaPlayer mMyMediaPlayer = new MediaPlayer();
 
     //Constructor
     public MyService() {
+
         super();
     }
 
-//    @Override
-//    public int onStartCommand(Intent intent, int flags, int startId) {
-//        Log.d("This","that");
-//        String url ="https://p.scdn.co/mp3-preview/e8c8720e4e8026413748263e9ce889aa9c58fe2f"; // your URL here
-//        MediaPlayer mediaPlayer = new MediaPlayer();
-//        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-//        try {
-//            mediaPlayer.setDataSource(url);
-//            mediaPlayer.prepare(); // might take long! (for buffering, etc)
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        mediaPlayer.start();
-//        return super.onStartCommand(intent, flags, startId);
-//    }
-
     /** method for clients */
-    public void playSong() {
-
-        Log.d("This","that");
-        String url ="https://p.scdn.co/mp3-preview/e8c8720e4e8026413748263e9ce889aa9c58fe2f"; // your URL here
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepare(); // might take long! (for buffering, etc)
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.start();
-    }
 
     //Setting the url for the track I want to play
     public void setUrl (String url){
@@ -84,6 +55,33 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
         }
     }
 
+    public void stop() {
+        //If current track is playing, stop it.
+        if (mMyMediaPlayer.isPlaying()) {
+            mMyMediaPlayer.stop();
+        }
+    }
+
+    public void pause() {
+        if (mMyMediaPlayer.isPlaying()) {
+            mMyMediaPlayer.pause();
+        }
+    }
+
+    public boolean isPlaying() {
+        if (mMyMediaPlayer.isPlaying()) {
+            return true;
+        }
+        return false;
+    }
+
+    public void resume() {
+        if (!mMyMediaPlayer.isPlaying()) {
+            mMyMediaPlayer.start();
+        }
+    }
+
+    //When prepareAsync is done, call this method so that the playButton can play music
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
@@ -99,6 +97,7 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.d("bound", "bound");
         return mBinder;
     }
     @Override

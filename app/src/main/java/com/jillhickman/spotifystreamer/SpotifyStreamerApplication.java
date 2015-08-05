@@ -1,7 +1,6 @@
 package com.jillhickman.spotifystreamer;
 
 import android.app.Application;
-import android.media.MediaPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +28,6 @@ public class SpotifyStreamerApplication extends Application{
 
     //trackListHolder obj ArrayList
     public static final Tracks trackListHolder = new Tracks();
-
-    //MyMediaPlayer obj. Need so we can access in dialog fragment
-    public static MediaPlayer MyMediaPlayer = new MediaPlayer();
 
     //Position of track in track array
     public static int positionOfTrack;

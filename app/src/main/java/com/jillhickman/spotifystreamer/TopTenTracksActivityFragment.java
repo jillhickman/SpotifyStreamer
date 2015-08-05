@@ -31,9 +31,6 @@ public class TopTenTracksActivityFragment extends Fragment {
 
     private Tracks mTracksList;
 
-    public TopTenTracksActivityFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -133,8 +130,5 @@ public class TopTenTracksActivityFragment extends Fragment {
             super.onPostExecute(tracks);
 
         }
-
     }
-
-
 }

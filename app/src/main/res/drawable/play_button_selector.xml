@@ -4,9 +4,6 @@
     <item android:state_selected="true"
         android:drawable="@drawable/pause"/>
 
-    <item android:state_enabled="false"
-        android:drawable="@drawable/play_disabled"/>
-
     <item android:drawable="@drawable/play" />
 
 </selector>
