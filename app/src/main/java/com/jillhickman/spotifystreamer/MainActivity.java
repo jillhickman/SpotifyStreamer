@@ -39,12 +39,6 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
-
-        Intent intent = new Intent(this, MyService.class);
-        intent.putExtra("KEY1", "Value to be used by the service");
-        startService(intent);
-
-
         setContentView(R.layout.activity_main);
 
         if (findViewById(R.id.track_detail_container) != null) {
