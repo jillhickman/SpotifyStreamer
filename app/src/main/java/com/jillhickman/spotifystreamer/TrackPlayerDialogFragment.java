@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -26,6 +27,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
 
     public static final String TAG = "TrackPlayerDialogFragment";
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -35,13 +37,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
 
         View v = inflater.inflate(R.layout.trackplayerlayout, container, false);
 
-//        final LinearLayout linearLayout = (LinearLayout) v.findViewById(R.id.trackplayer_root_layout);
-//        linearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            public void onGlobalLayout() {
-//                linearLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-//            }
-//        });
-
+        //To update if previous or next button should be disabled
         checkPositonIsValid(v);
 
         //Call prepareToPlay so that music can be streamed in the background thread.
@@ -125,6 +121,12 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         });
 
         //Getting the handle to the seek bar
+        SeekBar seekBar = (SeekBar) v.findViewById(R.id.trackplayer_seek_bar);
+        //Get the max duration of track
+        long maxDuration = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).duration_ms;
+        //Set max duration of track and set to seek bar
+        seekBar.setMax((int) maxDuration);
+
 
         return v;
     }
@@ -136,12 +138,11 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
 
         //Streaming with Media player, got code from Media Playback API Guide
         //http://developer.android.com/guide/topics/media/mediaplayer.html#mediaplayer
-        String url = songUrl; // your URL here
         SpotifyStreamerApplication.MyMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         try {
             SpotifyStreamerApplication.MyMediaPlayer.reset();
-            SpotifyStreamerApplication.MyMediaPlayer.setDataSource(url);
+            SpotifyStreamerApplication.MyMediaPlayer.setDataSource(songUrl);
             //Set a listener to know when prepareAsync is done
             SpotifyStreamerApplication.MyMediaPlayer.setOnPreparedListener(this);
             //Calling prepareAsync so it can do the work on a background thread
@@ -232,7 +233,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
         playButton.setSelected(false);
     }
 
-    //Hard codes the dialog fragment to this width and height
+    //Hard coded the dialog fragment to this width and height
     @Override
     public void onResume() {
         int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
@@ -252,9 +253,10 @@ public class TrackPlayerDialogFragment extends DialogFragment implements MediaPl
     @Override
     public void onPrepared(MediaPlayer mp) {
         ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
-        //Shows playButton
+        //Shows play button
         playButton.setEnabled(true);
 
     }
+
 }
 

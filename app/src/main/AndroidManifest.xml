@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jillhickman.spotifystreamer" >
+
     //this permission needed for app to perform network access
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!--If your player application needs to keep the screen from dimming or the processor from
     sleeping (for Media Player)-->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
 
 
     <application
@@ -33,6 +34,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.jillhickman.spotifystreamer.MainActivity" />
         </activity>
+        <!--Service for the Media Player-->
+        <service android:name=".MyService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
