@@ -6,6 +6,10 @@ package com.jillhickman.spotifystreamer;
  */
 public class ChangedSeekBarEvent {
 
-    public ChangedSeekBarEvent() {
+    public long mChangedSeekBar;
+
+    //Constructor that takes the seek bar's position in the track
+    public ChangedSeekBarEvent(long position) {
+        mChangedSeekBar = position;
     }
 }

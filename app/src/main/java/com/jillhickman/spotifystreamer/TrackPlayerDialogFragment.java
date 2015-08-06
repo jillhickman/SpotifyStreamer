@@ -31,7 +31,26 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
 
     MyService mService;
 
+    SeekBar mSeekBar;
+
     boolean mBound = false;
+
+//    //Member variable that starts a new thread, handler to change music time position
+//    private Handler mSeekBarHandler = new Handler();
+//    private  Runnable mUpdateTrackTimePosition = new Runnable() {
+//
+//        @Override
+//        public void run() {
+//            long scrubPosition = MyService.mMyMediaPlayer.getCurrentPosition();
+//            ChangedSeekBarEvent changedSeekBarEvent = new ChangedSeekBarEvent(scrubPosition);
+//            SpotifyStreamerApplication.ottoBus.post(changedSeekBarEvent);
+//            //Repeat this at every 500milliseconds
+//            mSeekBarHandler.postDelayed(this, 500);
+//        }
+//    };
+
+
+
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -147,14 +166,13 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         });
 
         //Getting the handle to the seek bar
-        SeekBar seekBar = (SeekBar) v.findViewById(R.id.trackplayer_seek_bar);
+        mSeekBar = (SeekBar) v.findViewById(R.id.trackplayer_seek_bar);
         //Get the max duration of track
 //        long maxDuration = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).duration_ms;
         //Set max duration of track and set to seek bar
-        seekBar.setMax(30000);
-        //Set the seek bart listener to the seekbar
-        seekBar.setOnSeekBarChangeListener(this);
-
+        mSeekBar.setMax(30000);
+        //Set the seek bar listener to the seekbar
+        mSeekBar.setOnSeekBarChangeListener(this);
 
         return v;
     }
@@ -229,13 +247,14 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         }
     }
 
-    // The event comes from the service. We use it to update the seek bar
+    //This method listens to any ChangedTrackTimeEvents that get posted on the bus
+    //Event comes from the service. We use it to update the seek bar
     @SuppressWarnings("unused")
     @Subscribe
     public void onNewValueFromService (ChangedTrackTimeEvent event) {
-        SeekBar seekBar = (SeekBar) getView().findViewById(R.id.trackplayer_seek_bar);
-
-        seekBar.setProgress((int)(event.mElapsedTime));
+        mSeekBar = (SeekBar) getView().findViewById(R.id.trackplayer_seek_bar);
+        //Sets the seekbar to the time elapsed, the value from the service
+        mSeekBar.setProgress((int)(event.mElapsedTime));
     }
 
     @Override
@@ -294,12 +313,15 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//        // This happens when the user moves the seekbar along it's track
-//        // The service will log out messages to show us that it got the message.
-//        // So look in the output
-//        ChangedSeekBarEvent event = new ChangedSeekBarEvent(progress);
-//        SpotifyStreamerApplication.ottoBus.post(event);
-
+        // This happens when the user moves the seekbar along it's track
+        // The service will log out messages to show us that it got the message.
+            if(fromUser) {
+                MyService.mMyMediaPlayer.seekTo(progress);
+                mSeekBar.setProgress(progress);
+                ChangedSeekBarEvent event = new ChangedSeekBarEvent(progress);
+                //Post the event
+                SpotifyStreamerApplication.ottoBus.post(event);
+            }
     }
 }
 

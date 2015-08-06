@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.squareup.otto.Subscribe;
+
 import java.io.IOException;
 
 /**
@@ -20,11 +22,8 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
 
     public static String mUrl;
 
-
+    //Member variable that starts a new thread,and handler for music duration
     private Handler mDurationHandler = new Handler();
-
-    //Handler to change seekBarTime
-    //Member variable that starts a new thread
     private Runnable mUpdateSeekBarTime = new Runnable() {
 
         public void run() {
@@ -133,13 +132,17 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
         super.onDestroy();
     }
 
-//    // NEW This method listens to any ChangedSeekbarEvents that get posted on the bus
-//    @SuppressWarnings("unused")
-//    @Subscribe
-//    public void onUserChangedSeekbar (ChangedSeekbarEvent event) {
-//        // The service will log out messages to show us that it got the message.
-//        // So look in the output
-//        mOneToAHundred = event.value;
-//        Log.i(TAG, String.valueOf(mOneToAHundred));
-//    }
+    //This method listens to any ChangedSeekBarEvents that get posted on the bus
+    //Event comes from the fragment. Use it to find position in track.
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onUserChangedSeekbar (ChangedSeekBarEvent event) {
+        // The service will log out messages to show us that it got the message.
+        // So look in the output
+
+
+
+
+        Log.i(TAG, String.valueOf(event.mChangedSeekBar));
+    }
 }
