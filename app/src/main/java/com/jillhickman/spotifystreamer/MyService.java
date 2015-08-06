@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -19,6 +20,23 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
 
     public static String mUrl;
 
+
+    private Handler mDurationHandler = new Handler();
+
+    //Handler to change seekBarTime
+    //Member variable that starts a new thread
+    private Runnable mUpdateSeekBarTime = new Runnable() {
+
+        public void run() {
+
+            long timeElapsed = mMyMediaPlayer.getCurrentPosition();
+            ChangedTrackTimeEvent changedTrackTimeEvent = new ChangedTrackTimeEvent(timeElapsed);
+            SpotifyStreamerApplication.ottoBus.post(changedTrackTimeEvent);
+            //Repeat this at every 500milliseconds
+            mDurationHandler.postDelayed(this, 500);
+        }
+    };
+
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
 
@@ -27,8 +45,10 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
 
     //Constructor
     public MyService() {
-
         super();
+
+        //Register with the bus
+        SpotifyStreamerApplication.ottoBus.register(this);
     }
 
     /** method for clients */
@@ -85,6 +105,10 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+//        long timeElapsed = mp.getCurrentPosition();
+
+        //Post the event
+        mDurationHandler.postDelayed(mUpdateSeekBarTime, 100);
     }
 
 
@@ -103,6 +127,19 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
     @Override
     public void onDestroy() {
         Log.i(TAG, "Yikes, I'm being destroyed");
+
+        //Unregister with the bus
+        SpotifyStreamerApplication.ottoBus.unregister(this);
         super.onDestroy();
     }
+
+//    // NEW This method listens to any ChangedSeekbarEvents that get posted on the bus
+//    @SuppressWarnings("unused")
+//    @Subscribe
+//    public void onUserChangedSeekbar (ChangedSeekbarEvent event) {
+//        // The service will log out messages to show us that it got the message.
+//        // So look in the output
+//        mOneToAHundred = event.value;
+//        Log.i(TAG, String.valueOf(mOneToAHundred));
+//    }
 }

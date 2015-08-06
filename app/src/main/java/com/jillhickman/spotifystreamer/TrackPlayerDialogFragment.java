@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import kaaes.spotify.webapi.android.models.Artist;
@@ -24,7 +25,7 @@ import kaaes.spotify.webapi.android.models.Image;
 /**
  * Created by jillhickman on 7/27/15.
  */
-public class TrackPlayerDialogFragment extends DialogFragment {
+public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
 
     public static final String TAG = "TrackPlayerDialogFragment";
 
@@ -54,6 +55,8 @@ public class TrackPlayerDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+//        super.onCreateView(savedInstanceState);
+//        setRetainInstance(true);
 
         //Gets rid of the title in the layout for this dialog fragment.
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -146,9 +149,11 @@ public class TrackPlayerDialogFragment extends DialogFragment {
         //Getting the handle to the seek bar
         SeekBar seekBar = (SeekBar) v.findViewById(R.id.trackplayer_seek_bar);
         //Get the max duration of track
-        long maxDuration = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).duration_ms;
+//        long maxDuration = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).duration_ms;
         //Set max duration of track and set to seek bar
-        seekBar.setMax((int) maxDuration);
+        seekBar.setMax(30000);
+        //Set the seek bart listener to the seekbar
+        seekBar.setOnSeekBarChangeListener(this);
 
 
         return v;
@@ -216,12 +221,21 @@ public class TrackPlayerDialogFragment extends DialogFragment {
             previousButton.setEnabled(false);
             previousButton.setSelected(false);
         }
-        //If array size is less or equal to 1 or array size +1 is greater or equal to array size
+        //If array size is less or equal to 1 or array size +1 is greater or equal to array size,
         //disable next button
         if((SpotifyStreamerApplication.trackListHolder.tracks).size() <= 1 || ((SpotifyStreamerApplication.positionOfTrack+1 >= (SpotifyStreamerApplication.trackListHolder.tracks).size()))){
             nextButton.setEnabled(false);
             nextButton.setSelected(false);
         }
+    }
+
+    // The event comes from the service. We use it to update the seek bar
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onNewValueFromService (ChangedTrackTimeEvent event) {
+        SeekBar seekBar = (SeekBar) getView().findViewById(R.id.trackplayer_seek_bar);
+
+        seekBar.setProgress((int)(event.mElapsedTime));
     }
 
     @Override
@@ -244,19 +258,48 @@ public class TrackPlayerDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+        //Register with the bus
+        SpotifyStreamerApplication.ottoBus.register(this);
+
         // Bind to LocalService
         Intent intent = new Intent(getActivity(), MyService.class);
+
+//        getActivity().startService(intent); //ADD THIS before the bindService()
+
         getActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        //Unregister with the bus
+        SpotifyStreamerApplication.ottoBus.unregister(this);
+
         // Unbind from the service
         if (mBound) {
             getActivity().unbindService(mConnection);
             mBound = false;
         }
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//        // This happens when the user moves the seekbar along it's track
+//        // The service will log out messages to show us that it got the message.
+//        // So look in the output
+//        ChangedSeekBarEvent event = new ChangedSeekBarEvent(progress);
+//        SpotifyStreamerApplication.ottoBus.post(event);
+
     }
 }
 

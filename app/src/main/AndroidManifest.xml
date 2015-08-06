@@ -7,7 +7,7 @@
 
     <!--If your player application needs to keep the screen from dimming or the processor from
     sleeping (for Media Player)-->
-    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 
     <application

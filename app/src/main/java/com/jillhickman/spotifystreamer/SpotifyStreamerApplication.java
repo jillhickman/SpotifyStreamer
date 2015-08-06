@@ -29,6 +29,9 @@ public class SpotifyStreamerApplication extends Application{
     //trackListHolder obj ArrayList
     public static final Tracks trackListHolder = new Tracks();
 
+    //Getting an instance of ottoBus so that service and fragment can communicate
+    public static OttoServiceBus ottoBus = new OttoServiceBus();
+
     //Position of track in track array
     public static int positionOfTrack;
 
