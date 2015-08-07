@@ -256,22 +256,33 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         }
     }
 
+
     //This method listens to any ChangedTrackTimeEvents that get posted on the bus
     //Event comes from the service. We use it to update the seek bar
     @SuppressWarnings("unused")
     @Subscribe
-    public void onNewValueFromService (ChangedTrackTimeEvent event) {
+    public void onNewValueFromService (com.jillhickman.spotifystreamer.ChangedTrackTimeEvent event) {
         mSeekBar = (SeekBar) getView().findViewById(R.id.trackplayer_seek_bar);
         //Sets the seekbar to the time elapsed, the value from the service
         mSeekBar.setProgress((int)(event.mElapsedTime));
     }
 
+
     @SuppressWarnings("unused")
     @Subscribe
-    public void onNewNowPlayingEvent (NowPlayingEvent event) {
+    public void onNewNowPlayingEvent (com.jillhickman.spotifystreamer.NowPlayingEvent event) {
         final ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
+        //When playing, show pause button
         playButton.setSelected(true);
 
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onDonePlayingEvent (com.jillhickman.spotifystreamer.DonePlayingEvent event) {
+        final ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
+        //When done playing, show play button
+        playButton.setSelected(false);
     }
 
 
@@ -284,6 +295,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
 
         super.onResume();
     }
+
 
     @Override
     public void onDestroyView() {
@@ -336,7 +348,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
             if(fromUser) {
                 MyService.mMyMediaPlayer.seekTo(progress);
                 mSeekBar.setProgress(progress);
-                ChangedSeekBarEvent event = new ChangedSeekBarEvent(progress);
+                com.jillhickman.spotifystreamer.ChangedSeekBarEvent event = new com.jillhickman.spotifystreamer.ChangedSeekBarEvent(progress);
                 //Post the event
                 SpotifyStreamerApplication.ottoBus.post(event);
             }
