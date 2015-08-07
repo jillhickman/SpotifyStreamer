@@ -49,8 +49,12 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
         //Register with the bus
         SpotifyStreamerApplication.ottoBus.register(this);
     }
-
     /** method for clients */
+
+    public static String getUrl() {
+        return mUrl;
+    }
+
 
     //Setting the url for the track I want to play
     public void setUrl (String url){
@@ -58,6 +62,27 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
     }
 
     public void play() {
+        mMyMediaPlayer.start();
+    }
+
+    public void reset() {
+        mMyMediaPlayer.reset();
+    }
+
+    public void prepareToPlay() {
+        try {
+            mMyMediaPlayer.setDataSource(mUrl);
+            //Set a listener to know when prepareAsync is done
+            mMyMediaPlayer.setOnPreparedListener(this);
+            //Calling prepareAsync so it can do the work on a background thread
+            mMyMediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void oldPlay() {
         //Streaming with Media player, got code from Media Playback API Guide
         //http://developer.android.com/guide/topics/media/mediaplayer.html#mediaplayer
         mMyMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -88,17 +113,14 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
     }
 
     public boolean isPlaying() {
-        if (mMyMediaPlayer.isPlaying()) {
-            return true;
-        }
-        return false;
+        return mMyMediaPlayer.isPlaying();
     }
 
-    public void resume() {
-        if (!mMyMediaPlayer.isPlaying()) {
-            mMyMediaPlayer.start();
-        }
-    }
+//    public void resume() {
+//        if (!mMyMediaPlayer.isPlaying()) {
+//            mMyMediaPlayer.start();
+//        }
+//    }
 
     //When prepareAsync is done, call this method so that the playButton can play music
     @Override
@@ -108,6 +130,8 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
 
         //Post the event
         mDurationHandler.postDelayed(mUpdateSeekBarTime, 100);
+        SpotifyStreamerApplication.ottoBus.post(new NowPlayingEvent());
+
     }
 
 

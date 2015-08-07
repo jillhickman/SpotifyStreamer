@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,22 +36,6 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
 
     boolean mBound = false;
 
-//    //Member variable that starts a new thread, handler to change music time position
-//    private Handler mSeekBarHandler = new Handler();
-//    private  Runnable mUpdateTrackTimePosition = new Runnable() {
-//
-//        @Override
-//        public void run() {
-//            long scrubPosition = MyService.mMyMediaPlayer.getCurrentPosition();
-//            ChangedSeekBarEvent changedSeekBarEvent = new ChangedSeekBarEvent(scrubPosition);
-//            SpotifyStreamerApplication.ottoBus.post(changedSeekBarEvent);
-//            //Repeat this at every 500milliseconds
-//            mSeekBarHandler.postDelayed(this, 500);
-//        }
-//    };
-
-
-
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -60,13 +45,31 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
             MyService.LocalBinder binder = (MyService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
-            mService.setUrl(SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).preview_url);
-            mService.play();
+
+            //Setting the previewUrl to the position of track url.
+            String previewUrl = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).preview_url;
+            //Setting the currentPlayingUrl to what the service is playing.
+            String currentPlayingUrl = MyService.getUrl();
+            boolean areTheUrlsSame = TextUtils.equals(previewUrl, currentPlayingUrl);
+
+            //If the media player is playing AND if the current track url and the media player url is the same, reverse it
+            //So, if conditions are true, make it false so that the music does not reset but keep playing on orientation change.
+            if (!( areTheUrlsSame)) {
+
+                //Otherwise, set service url to the  previewUrl.
+                mService.setUrl(previewUrl);
+
+                //Play the track
+                mService.oldPlay();
+            } else if (!mService.isPlaying()){
+                final ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
+                playButton.setSelected(false);
+
+            }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-
             mBound = false;
         }
     };
@@ -74,7 +77,14 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        super.onCreateView(savedInstanceState);
+//        if (MyService.mMyMediaPlayer.isPlaying()){
+//
+//        }
+
+
+
+
+//        super.onCreate(savedInstanceState);
 //        setRetainInstance(true);
 
         //Gets rid of the title in the layout for this dialog fragment.
@@ -131,11 +141,9 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
                     playButton.setEnabled(true);
                 }else {
                 //If music is paused, show the play button
-                    mService.resume();
+                    mService.play();
                     playButton.setSelected(true);
                 }
-
-
             }
         });
 
@@ -168,6 +176,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         //Getting the handle to the seek bar
         mSeekBar = (SeekBar) v.findViewById(R.id.trackplayer_seek_bar);
         //Get the max duration of track
+
 //        long maxDuration = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).duration_ms;
         //Set max duration of track and set to seek bar
         mSeekBar.setMax(30000);
@@ -256,6 +265,15 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         //Sets the seekbar to the time elapsed, the value from the service
         mSeekBar.setProgress((int)(event.mElapsedTime));
     }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onNewNowPlayingEvent (NowPlayingEvent event) {
+        final ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
+        playButton.setSelected(true);
+
+    }
+
 
     @Override
     public void onResume() {
