@@ -71,27 +71,6 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
     }
 
     public void play() {
-        mMyMediaPlayer.start();
-    }
-
-    public void reset() {
-        mMyMediaPlayer.reset();
-    }
-
-    public void prepareToPlay() {
-        try {
-            mMyMediaPlayer.setDataSource(mUrl);
-            //Set a listener to know when prepareAsync is done
-            mMyMediaPlayer.setOnPreparedListener(this);
-            //Calling prepareAsync so it can do the work on a background thread
-            mMyMediaPlayer.prepareAsync();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void oldPlay() {
         //Streaming with Media player, got code from Media Playback API Guide
         //http://developer.android.com/guide/topics/media/mediaplayer.html#mediaplayer
         mMyMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);

@@ -60,7 +60,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
                 mService.setUrl(previewUrl);
 
                 //Play the track
-                mService.oldPlay();
+                mService.play();
             } else if (!mService.isPlaying()){
                 final ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
                 playButton.setSelected(false);
@@ -84,8 +84,8 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
 
 
 
-//        super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
 
         //Gets rid of the title in the layout for this dialog fragment.
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -344,7 +344,6 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // This happens when the user moves the seekbar along it's track
-        // The service will log out messages to show us that it got the message.
             if(fromUser) {
                 MyService.mMyMediaPlayer.seekTo(progress);
                 mSeekBar.setProgress(progress);

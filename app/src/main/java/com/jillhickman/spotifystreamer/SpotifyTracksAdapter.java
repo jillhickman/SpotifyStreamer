@@ -72,6 +72,8 @@ public class SpotifyTracksAdapter extends ArrayAdapter<Track> {
             String imageUrl = imageOfAlbum.url;
             //Set picasso to use the Url
             Picasso.with(getContext()).load(imageUrl).into(albumnArtThumbnail);
+        }else {
+            albumnArtThumbnail.setImageDrawable(getContext().getResources().getDrawable(R.drawable.note));
         }
 
         return convertView;

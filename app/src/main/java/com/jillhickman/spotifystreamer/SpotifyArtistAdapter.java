@@ -69,6 +69,9 @@ public class SpotifyArtistAdapter extends ArrayAdapter<Artist> {
             String imageUrl = imageOfArtist.url;
             //Set picasso to use that Url
             Picasso.with(getContext()).load(imageUrl).into(artistThumbnailView);
+        }else {
+            //if it is empty, set to default image.
+            artistThumbnailView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.note));
         }
 
         //Getting the handle to the textView

@@ -35,7 +35,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:src="@drawable/artist"
+        android:src="@drawable/note"
         android:scaleType="centerCrop"
         android:background="@color/material_blue_grey_800"
         />
