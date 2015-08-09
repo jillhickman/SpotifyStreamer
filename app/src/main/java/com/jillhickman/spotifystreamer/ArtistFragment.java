@@ -13,12 +13,17 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.jillhickman.spotifystreamer.Events.NewTopTenTracksEvents;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import kaaes.spotify.webapi.android.models.Tracks;
 import retrofit.RetrofitError;
 
 
@@ -27,7 +32,7 @@ import retrofit.RetrofitError;
  */
 public class ArtistFragment extends Fragment {
 
-    private  SpotifyArtistAdapter mResultAdapter;
+    private SpotifyArtistAdapter mResultAdapter;
 
     private ListView mListView;
 
@@ -98,6 +103,8 @@ public class ArtistFragment extends Fragment {
                 //so that I can access the artist for subtitle and track info query.
                 SpotifyStreamerApplication.topTenTrackArtist = artist;
 
+                new FindTopTenTrack().execute();
+
                 //If it is a tablet, show the top ten tracks when list item is clicked by
                 // adding the detail fragment using a fragment transaction.
                 if (SpotifyStreamerApplication.tablet == true) {
@@ -117,8 +124,9 @@ public class ArtistFragment extends Fragment {
         return rootView;
 
     }
+
     //Set up AsyncTask (to start after the user execute the search)
-    private class FindArtistTask extends AsyncTask<String, Integer, List<Artist> > {
+    private class FindArtistTask extends AsyncTask<String, Integer, List<Artist>> {
 
         //member variable so that we can access it
         private List<Artist> mArtistList;
@@ -144,7 +152,7 @@ public class ArtistFragment extends Fragment {
 
                 //Sets the mArtistList with the result of the artist searched
                 mArtistList = artistsPager.artists.items;
-            } catch (RetrofitError retrofitError){
+            } catch (RetrofitError retrofitError) {
                 //Used runOnUiThread when doing toast from background thread
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
@@ -160,14 +168,14 @@ public class ArtistFragment extends Fragment {
         protected void onPostExecute(List<Artist> artists) {
             //If artists is empty or artist is null, display toast
             //If no artist is found, lets the user know
-            if ( artists.isEmpty() || artists == null){
+            if (artists.isEmpty() || artists == null) {
                 Context context = getActivity();
 
                 Toast.makeText(context, R.string.toast_message, Toast.LENGTH_LONG).show();
 
             }
             //If artists is not empty, display results
-            else if(artists != null) {
+            else if (artists != null) {
 
                 //Instead of adding to the adapter, I added outside of the fragment life cycle
                 //so that the fragment does not blow away my data on screen rotation.
@@ -178,9 +186,73 @@ public class ArtistFragment extends Fragment {
                 SpotifyStreamerApplication.artists.addAll(artists);
                 mResultAdapter.notifyDataSetChanged();
 
-                }
-            super.onPostExecute(artists);
             }
+            super.onPostExecute(artists);
+        }
+    }
+
+    //Set up AsyncTask (to start after the user taps on an artist)
+    private class FindTopTenTrack extends AsyncTask<String, Integer, Tracks> {
+
+        @Override
+        protected Tracks doInBackground(String... params) {
+
+            //Set toTenArtist to the SpotifyStreamerApplication topTenTrackArtist.
+            Artist topTenArtist = SpotifyStreamerApplication.topTenTrackArtist;
+            //Set topTenArtistId by drilling into topTenArtist and getting the id.
+            //Need this Id to start a query for top trackListHolder query.
+            String topTenArtistId = topTenArtist.id;
+
+            //Getting the handle for the SpotifyApi
+            SpotifyApi api = new SpotifyApi();
+
+            //Getting the Spotify Service
+            SpotifyService spotify = api.getService();
+
+            //Getting the Map with the key value pairs.
+            Map<String, Object> options = new HashMap<>();
+
+            //Setting the options country to US.
+            options.put("country", "US");
+
+            //Executing the query, searching for Tracks
+            //Searches and gets trackListHolder
+            Tracks tracks = spotify.getArtistTopTrack(topTenArtistId, options);
+
+            //Sets the mTracksList with the result of the trackListHolder searched
+//            mTracksList = tracks;
+
+            return tracks;
+        }
+
+        //After doInBackground, call this method to update the view
+        @Override
+        protected void onPostExecute(Tracks tracks) {
+            //If trackListHolder is empty or trackListHolder is null, display toast. No trackListHolder
+            //were found for the artist.
+            if ( tracks.tracks.isEmpty()|| tracks.tracks == null){
+                Context context = getActivity();
+
+                Toast.makeText(context, R.string.track_toast_message, Toast.LENGTH_LONG).show();
+            }
+            //If trackListHolder is not empty, display results
+            else if(tracks.tracks != null) {
+
+                //Instead of adding to the adapter, I added outside of the fragment life cycle
+                //so that the fragment does not blow away my data on screen rotation.
+                //Clear array list from the SpotifyStreamerApplication, to clear previous search results.
+                //Add the array list from the SpotifyStreamerApplication.
+                //Update the adapter that the data has changed.
+                SpotifyStreamerApplication.trackListHolder.tracks.clear();
+                SpotifyStreamerApplication.trackListHolder.tracks.addAll(tracks.tracks);
+//                mTrackResultAdapter.notifyDataSetChanged();
+
+                //Posting this because top ten fragment needs to know that it has new data to show.
+                SpotifyStreamerApplication.ottoBus.post(new NewTopTenTracksEvents());
+            }
+            super.onPostExecute(tracks);
+
+        }
     }
 
 }
