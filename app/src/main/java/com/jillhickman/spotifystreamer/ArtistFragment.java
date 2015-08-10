@@ -217,7 +217,7 @@ public class ArtistFragment extends Fragment {
 
             //Executing the query, searching for Tracks
             //Searches and gets trackListHolder
-            Tracks tracks = null;
+            Tracks tracks;
             try {
                 tracks = spotify.getArtistTopTrack(topTenArtistId, options);
             } catch (RetrofitError e) {
@@ -225,8 +225,6 @@ public class ArtistFragment extends Fragment {
                 return null;
             }
 
-            //Sets the mTracksList with the result of the trackListHolder searched
-//            mTracksList = tracks;
 
             return tracks;
         }
@@ -251,7 +249,6 @@ public class ArtistFragment extends Fragment {
                 //Update the adapter that the data has changed.
                 SpotifyStreamerApplication.trackListHolder.tracks.clear();
                 SpotifyStreamerApplication.trackListHolder.tracks.addAll(tracks.tracks);
-//                mTrackResultAdapter.notifyDataSetChanged();
 
                 //Posting this because top ten fragment needs to know that it has new data to show.
                 SpotifyStreamerApplication.ottoBus.post(new NewTopTenTracksEvents());

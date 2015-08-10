@@ -14,8 +14,6 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Tracks;
-
 
 /**
  * A placeholder fragment containing a simple view.
@@ -23,8 +21,6 @@ import kaaes.spotify.webapi.android.models.Tracks;
 public class TopTenTracksActivityFragment extends Fragment {
 
     private SpotifyTracksAdapter mTrackResultAdapter;
-
-    private Tracks mTracksList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -35,10 +35,10 @@ public class SpotifyStreamerApplication extends Application{
     //Position of track in track array
     public static int positionOfTrack;
 
-    //Default value for start of seekbar and saves data
+    //Default value for start of seek bar and saves data
     public static String elapsedTime = "00:00";
 
-    //Default value for end of seekbar and saves data
+    //Default value for end of seek bar and saves data
     public static String doneTime = "00:30";
 
     //Boolean, if device is larger than sw600dp...it is a tablet
