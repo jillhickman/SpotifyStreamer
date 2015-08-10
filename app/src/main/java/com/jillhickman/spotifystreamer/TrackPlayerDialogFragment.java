@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.jillhickman.spotifystreamer.Events.ChangedSeekBarEvent;
 import com.jillhickman.spotifystreamer.Events.ChangedTrackTimeEvent;
 import com.jillhickman.spotifystreamer.Events.DonePlayingEvent;
 import com.jillhickman.spotifystreamer.Events.NowPlayingEvent;
@@ -81,11 +80,6 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        if (MyService.mMyMediaPlayer.isPlaying()){
-//
-//        }
-
-
 
 
         super.onCreate(savedInstanceState);
@@ -103,7 +97,6 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         ImageView albumArtworkView = (ImageView) v.findViewById(R.id.trackplayer_image);
         //Get the album image for the song in the 0 position.
         Image imageOfAlbumArtwork = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).album.images.get(0);
-
         //Get the Url of the image
         String imageUrl = imageOfAlbumArtwork.url;
         //Set picasso to use that Url
@@ -118,16 +111,25 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         //Set textView to the artistName
         artistNameView.setText(artistName);
 
-        //Getting the handle to the album name textView
+        //Getting the handle to the album name textView and setting it
         TextView albumNameView = (TextView) v.findViewById(R.id.trackplayer_albumn_name);
         String albumName = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).album.name;
-        //Set the textView to the album name
         albumNameView.setText(albumName);
 
-        //Getting the handle to the track name textView
+        //Getting the handle to the track name textView and setting it.
         TextView trackNameView = (TextView) v.findViewById(R.id.trackplayer_track_name);
         String trackName = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).name;
         trackNameView.setText(trackName);
+
+        //Getting the handle to the seek bar begin textView and setting it.
+        TextView elapseTimeTextView = (TextView) v.findViewById(R.id.trackplayer_seek_bar_begin);
+        String time = SpotifyStreamerApplication.elapsedTime;
+        elapseTimeTextView.setText(time);
+
+        //Getting the handle to the seek bar end textView and setting it.
+        TextView completeTimeTextView = (TextView) v.findViewById(R.id.trackplayer_seek_bar_end);
+        String timeEnd = SpotifyStreamerApplication.doneTime;
+        completeTimeTextView.setText(timeEnd);
 
         //Getting the handle to the playButton
         final ImageButton playButton = (ImageButton) v.findViewById(R.id.trackplayer_play_button);
@@ -145,7 +147,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
                     playButton.setEnabled(true);
                 }else {
                 //If music is paused, show the play button
-                    mService.play();
+                    mService.resume();
                     playButton.setSelected(true);
                 }
             }
@@ -181,7 +183,6 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         mSeekBar = (SeekBar) v.findViewById(R.id.trackplayer_seek_bar);
         //Get the max duration of track
 
-//        long maxDuration = SpotifyStreamerApplication.trackListHolder.tracks.get(SpotifyStreamerApplication.positionOfTrack).duration_ms;
         //Set max duration of track and set to seek bar
         mSeekBar.setMax(30000);
         //Set the seek bar listener to the seekbar
@@ -271,12 +272,14 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
             //Sets the seekbar to the time elapsed, the value from the service
             mSeekBar.setProgress((int)(event.mElapsedTime));
 
-
+            //Shows the elapsed time of the song, on the left of seekbar.
             TextView elapseTimeTextView = (TextView) getView().findViewById(R.id.trackplayer_seek_bar_begin);
             int tempInt = (int) (event.mElapsedTime/1000);
-
+            //Formatting it so that it is :00 format
             String tempString = String.format("%02d", tempInt);
             String elapsedTime = "00:" + tempString;
+            //Saving out the elapsedTime to the application
+            SpotifyStreamerApplication.elapsedTime = elapsedTime;
             elapseTimeTextView.setText(elapsedTime);
         }
 
@@ -291,12 +294,14 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         //When playing, show pause button
         playButton.setSelected(true);
 
-        //Show the max duration on the whole song at the end of seekbar.
+        //Shows the max duration on the whole song at the end of seekbar.
         TextView completeTimeTextView = (TextView) getView().findViewById(R.id.trackplayer_seek_bar_end);
         int tempInt = (int) (event.mMaxDuration/1000);
-
+        //Formatting it so that it is :00 format
         String tempString = String.format("%02d", tempInt);
         String elapsedTime = "00:" + tempString;
+        //Saving out the doneTime to the application
+        SpotifyStreamerApplication.doneTime = elapsedTime;
         completeTimeTextView.setText(elapsedTime);
 
 
@@ -380,10 +385,10 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
         // This happens when the user moves the seekbar along it's track
             if(fromUser) {
                 MyService.mMyMediaPlayer.seekTo(progress);
-                mSeekBar.setProgress(progress);
-                ChangedSeekBarEvent event = new ChangedSeekBarEvent(progress);
+//                mSeekBar.setProgress(progress);
+//                ChangedSeekBarEvent event = new ChangedSeekBarEvent(progress);
                 //Post the event
-                SpotifyStreamerApplication.ottoBus.post(event);
+//                SpotifyStreamerApplication.ottoBus.post(event);
             }
     }
 }

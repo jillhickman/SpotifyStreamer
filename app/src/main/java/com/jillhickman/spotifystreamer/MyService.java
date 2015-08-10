@@ -91,6 +91,11 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
         }
     }
 
+    public void resume() {
+        //Set a listener to know when prepareAsync is done
+        mMyMediaPlayer.start();
+    }
+
     public void stop() {
         //If current track is playing, stop it.
         if (mMyMediaPlayer.isPlaying()) {
