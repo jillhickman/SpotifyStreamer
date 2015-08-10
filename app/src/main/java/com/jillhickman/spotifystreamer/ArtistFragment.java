@@ -168,7 +168,7 @@ public class ArtistFragment extends Fragment {
         protected void onPostExecute(List<Artist> artists) {
             //If artists is empty or artist is null, display toast
             //If no artist is found, lets the user know
-            if (artists.isEmpty() || artists == null) {
+            if (artists == null ||artists.isEmpty()) {
                 Context context = getActivity();
 
                 Toast.makeText(context, R.string.toast_message, Toast.LENGTH_LONG).show();
@@ -217,7 +217,13 @@ public class ArtistFragment extends Fragment {
 
             //Executing the query, searching for Tracks
             //Searches and gets trackListHolder
-            Tracks tracks = spotify.getArtistTopTrack(topTenArtistId, options);
+            Tracks tracks = null;
+            try {
+                tracks = spotify.getArtistTopTrack(topTenArtistId, options);
+            } catch (RetrofitError e) {
+                e.printStackTrace();
+                return null;
+            }
 
             //Sets the mTracksList with the result of the trackListHolder searched
 //            mTracksList = tracks;
@@ -228,9 +234,9 @@ public class ArtistFragment extends Fragment {
         //After doInBackground, call this method to update the view
         @Override
         protected void onPostExecute(Tracks tracks) {
-            //If trackListHolder is empty or trackListHolder is null, display toast. No trackListHolder
+            //If tracks is null or If trackListHolder is empty or trackListHolder is null, display toast. No trackListHolder
             //were found for the artist.
-            if ( tracks.tracks.isEmpty()|| tracks.tracks == null){
+            if (tracks == null || tracks.tracks == null || tracks.tracks.isEmpty()){
                 Context context = getActivity();
 
                 Toast.makeText(context, R.string.track_toast_message, Toast.LENGTH_LONG).show();
