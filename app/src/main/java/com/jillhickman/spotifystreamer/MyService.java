@@ -9,6 +9,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.jillhickman.spotifystreamer.Events.ChangedSeekBarEvent;
+import com.jillhickman.spotifystreamer.Events.ChangedTrackTimeEvent;
+import com.jillhickman.spotifystreamer.Events.DonePlayingEvent;
+import com.jillhickman.spotifystreamer.Events.NowPlayingEvent;
 import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
@@ -29,7 +33,7 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
         public void run() {
 
             long timeElapsed = mMyMediaPlayer.getCurrentPosition();
-            com.jillhickman.spotifystreamer.ChangedTrackTimeEvent changedTrackTimeEvent = new com.jillhickman.spotifystreamer.ChangedTrackTimeEvent(timeElapsed);
+            ChangedTrackTimeEvent changedTrackTimeEvent = new ChangedTrackTimeEvent(timeElapsed);
             SpotifyStreamerApplication.ottoBus.post(changedTrackTimeEvent);
             //Repeat this at every 500milliseconds
             mDurationHandler.postDelayed(this, 500);
@@ -53,8 +57,8 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
             //Track is done playing
             @Override
             public void onCompletion(MediaPlayer mp) {
-                SpotifyStreamerApplication.ottoBus.post(new com.jillhickman.spotifystreamer.DonePlayingEvent());
-
+                long maxDuration = mp.getDuration();
+                SpotifyStreamerApplication.ottoBus.post(new DonePlayingEvent(maxDuration));
             }
         });
     }
@@ -112,8 +116,9 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
 
         //Post the event, the progress of track
         mDurationHandler.postDelayed(mUpdateSeekBarTime, 100);
-        //Post the event, that it is now playing
-        SpotifyStreamerApplication.ottoBus.post(new com.jillhickman.spotifystreamer.NowPlayingEvent());
+
+        long maxDuration = mp.getDuration();
+        SpotifyStreamerApplication.ottoBus.post(new NowPlayingEvent(maxDuration));
 
     }
 
@@ -142,7 +147,7 @@ public class MyService extends Service implements MediaPlayer.OnPreparedListener
     //Event comes from the fragment. Use it to find position in track.
     @SuppressWarnings("unused")
     @Subscribe
-    public void onUserChangedSeekbar (com.jillhickman.spotifystreamer.ChangedSeekBarEvent event) {
+    public void onUserChangedSeekbar (ChangedSeekBarEvent event) {
 
         Log.i(TAG, String.valueOf(event.mChangedSeekBar));
     }

@@ -1,4 +1,4 @@
-package com.jillhickman.spotifystreamer;
+package com.jillhickman.spotifystreamer.Events;
 
 /**
  * Created by jillhickman on 8/5/15.

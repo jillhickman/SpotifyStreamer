@@ -17,6 +17,10 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.jillhickman.spotifystreamer.Events.ChangedSeekBarEvent;
+import com.jillhickman.spotifystreamer.Events.ChangedTrackTimeEvent;
+import com.jillhickman.spotifystreamer.Events.DonePlayingEvent;
+import com.jillhickman.spotifystreamer.Events.NowPlayingEvent;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -261,28 +265,58 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
     //Event comes from the service. We use it to update the seek bar
     @SuppressWarnings("unused")
     @Subscribe
-    public void onNewValueFromService (com.jillhickman.spotifystreamer.ChangedTrackTimeEvent event) {
-        mSeekBar = (SeekBar) getView().findViewById(R.id.trackplayer_seek_bar);
-        //Sets the seekbar to the time elapsed, the value from the service
-        mSeekBar.setProgress((int)(event.mElapsedTime));
+    public void onNewValueFromService (ChangedTrackTimeEvent event) {
+        if (MyService.mMyMediaPlayer.isPlaying()){
+            mSeekBar = (SeekBar) getView().findViewById(R.id.trackplayer_seek_bar);
+            //Sets the seekbar to the time elapsed, the value from the service
+            mSeekBar.setProgress((int)(event.mElapsedTime));
+
+
+            TextView elapseTimeTextView = (TextView) getView().findViewById(R.id.trackplayer_seek_bar_begin);
+            int tempInt = (int) (event.mElapsedTime/1000);
+
+            String tempString = String.format("%02d", tempInt);
+            String elapsedTime = "00:" + tempString;
+            elapseTimeTextView.setText(elapsedTime);
+        }
+
     }
 
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onNewNowPlayingEvent (com.jillhickman.spotifystreamer.NowPlayingEvent event) {
+    public void onNewNowPlayingEvent (NowPlayingEvent event) {
+
         final ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
         //When playing, show pause button
         playButton.setSelected(true);
 
+        //Show the max duration on the whole song at the end of seekbar.
+        TextView completeTimeTextView = (TextView) getView().findViewById(R.id.trackplayer_seek_bar_end);
+        int tempInt = (int) (event.mMaxDuration/1000);
+
+        String tempString = String.format("%02d", tempInt);
+        String elapsedTime = "00:" + tempString;
+        completeTimeTextView.setText(elapsedTime);
+
+
     }
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onDonePlayingEvent (com.jillhickman.spotifystreamer.DonePlayingEvent event) {
+    public void onDonePlayingEvent (DonePlayingEvent event) {
         final ImageButton playButton = (ImageButton) getView().findViewById(R.id.trackplayer_play_button);
         //When done playing, show play button
         playButton.setSelected(false);
+
+        //Have the elapse time meet the track's elapse time by seconds, counting up
+        TextView elapseTimeTextView = (TextView) getView().findViewById(R.id.trackplayer_seek_bar_begin);
+        int tempInt = (int) (event.mElapsedTime/1000);
+
+        String tempString = String.format("%02d", tempInt);
+        String elapsedTime = "00:" + tempString;
+        elapseTimeTextView.setText(elapsedTime);
+
     }
 
 
@@ -347,7 +381,7 @@ public class TrackPlayerDialogFragment extends DialogFragment implements SeekBar
             if(fromUser) {
                 MyService.mMyMediaPlayer.seekTo(progress);
                 mSeekBar.setProgress(progress);
-                com.jillhickman.spotifystreamer.ChangedSeekBarEvent event = new com.jillhickman.spotifystreamer.ChangedSeekBarEvent(progress);
+                ChangedSeekBarEvent event = new ChangedSeekBarEvent(progress);
                 //Post the event
                 SpotifyStreamerApplication.ottoBus.post(event);
             }
