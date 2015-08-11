@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.jillhickman.spotifystreamer.Events.NewTopTenTracksEvents;
 import com.squareup.otto.Subscribe;
@@ -25,8 +26,6 @@ public class TopTenTracksActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-//        new FindTopTenTrack().execute();
 
         //Get the handle on the data array from SpotifyStreamerApplication class
         List starterList = SpotifyStreamerApplication.trackListHolder.tracks;
@@ -50,13 +49,21 @@ public class TopTenTracksActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //Getting the position of the track from the SpotifyStreamerApplication
-                SpotifyStreamerApplication.positionOfTrack = position;
+                //Check to see if there is internet connectivity. There is internet.
+                if (SpotifyStreamerApplication.isNetworkAvailable(getActivity())){
 
-                //Get instance of the dialog fragment and show with fragment manager.
-                DialogFragment newFragment = new TrackPlayerDialogFragment();
-                //Show the new fragment by passing in the activity and fragment manager with Tag.
-                newFragment.show(getActivity().getSupportFragmentManager(), TrackPlayerDialogFragment.TAG);
+                    //Getting the position of the track from the SpotifyStreamerApplication
+                    SpotifyStreamerApplication.positionOfTrack = position;
+
+                    //Get instance of the dialog fragment and show with fragment manager.
+                    DialogFragment newFragment = new TrackPlayerDialogFragment();
+                    //Show the new fragment by passing in the activity and fragment manager with Tag.
+                    newFragment.show(getActivity().getSupportFragmentManager(), TrackPlayerDialogFragment.TAG);
+                } else {
+                    //There is no internet, show toast.
+                    Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
+                }
+
             }
         });
         return rootView;

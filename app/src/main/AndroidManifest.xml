@@ -4,6 +4,8 @@
 
     //this permission needed for app to perform network access
     <uses-permission android:name="android.permission.INTERNET" />
+    //this
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!--If your player application needs to keep the screen from dimming or the processor from
     sleeping (for Media Player)-->

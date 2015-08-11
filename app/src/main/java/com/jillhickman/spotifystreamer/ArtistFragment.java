@@ -34,8 +34,6 @@ public class ArtistFragment extends Fragment {
 
     private SpotifyArtistAdapter mResultAdapter;
 
-    private ListView mListView;
-
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
     public ArtistFragment() {
@@ -58,8 +56,8 @@ public class ArtistFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         //Get reference to the ListView, and attach this adapter to it
-        mListView = (ListView) rootView.findViewById(R.id.listview_search);
-        mListView.setAdapter(mResultAdapter);
+        ListView listView = (ListView) rootView.findViewById(R.id.listview_search);
+        listView.setAdapter(mResultAdapter);
 
         //Get handle for searchView
         final SearchView mSearchText = (SearchView) rootView.findViewById(R.id.searchView);
@@ -71,16 +69,18 @@ public class ArtistFragment extends Fragment {
         mSearchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                boolean handled = false;
 
-                Context context = getActivity();
+                //Check to see if there is internet connectivity. There is internet.
+                if (SpotifyStreamerApplication.isNetworkAvailable(getActivity())){
+                    //Gets the text from the searchView, so can use Spotify for search
+                    CharSequence artistName = mSearchText.getQuery();
 
-                //Gets the text from the searchView, so can use Spotify for search
-                CharSequence artistName = mSearchText.getQuery();
-
-                //Searching the spotify API through AsyncTask.
-                new FindArtistTask().execute(artistName.toString());
-
+                    //Searching the spotify API through AsyncTask.
+                    new FindArtistTask().execute(artistName.toString());
+                }else {
+                    //No internet, show toast.
+                    Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
+                }
                 return false;
             }
 
@@ -91,38 +91,43 @@ public class ArtistFragment extends Fragment {
         });
 
         //Use setItemClickListener to show detail view when click on an artist
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //Getting the handle for the Artist obj in the appropriate position
-                //Accessing the SpotifyStreamerApplication because that's where the artists list of artist objects.
-                Artist artist = SpotifyStreamerApplication.artists.get(position);
+                //Check to see if there is internet connectivity. There is internet.
+                if (SpotifyStreamerApplication.isNetworkAvailable(getActivity())){
+                    //Getting the handle for the Artist obj in the appropriate position
+                    //Accessing the SpotifyStreamerApplication because that's where the artists list of artist objects.
+                    Artist artist = SpotifyStreamerApplication.artists.get(position);
 
-                //Setting the artist that I got from the SpotifyStreamerApplication.artists to the topTenTrackArtist
-                //so that I can access the artist for subtitle and track info query.
-                SpotifyStreamerApplication.topTenTrackArtist = artist;
+                    //Setting the artist that I got from the SpotifyStreamerApplication.artists to the topTenTrackArtist
+                    //so that I can access the artist for subtitle and track info query.
+                    SpotifyStreamerApplication.topTenTrackArtist = artist;
 
-                new FindTopTenTrack().execute();
+                    new FindTopTenTrack().execute();
 
-                //If it is a tablet, show the top ten tracks when list item is clicked by
-                // adding the detail fragment using a fragment transaction.
-                if (SpotifyStreamerApplication.tablet == true) {
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.track_detail_container, new TopTenTracksActivityFragment(), DETAILFRAGMENT_TAG)
-                            .commit();
+                    //If it is a tablet, show the top ten tracks when list item is clicked by
+                    // adding the detail fragment using a fragment transaction.
+                    if (SpotifyStreamerApplication.tablet == true) {
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.track_detail_container, new TopTenTracksActivityFragment(), DETAILFRAGMENT_TAG)
+                                .commit();
 
-                    //For phone, launch an intent for new activity
+                        //For phone, launch an intent for new activity
+                    } else {
+                        //Explicit intent to take to TopTenTracksActivity
+                        Intent intent = new Intent(getActivity(), TopTenTracksActivity.class);
+                        startActivity(intent);
+                    }
                 } else {
-                    //Explicit intent to take to TopTenTracksActivity
-                    Intent intent = new Intent(getActivity(), TopTenTracksActivity.class);
-                    startActivity(intent);
+                    //There is no internet, show toast.
+                    Toast.makeText(getActivity(), R.string.internet_toast_message, Toast.LENGTH_LONG).show();
                 }
             }
         });
 
         return rootView;
-
     }
 
     //Set up AsyncTask (to start after the user execute the search)
@@ -166,8 +171,8 @@ public class ArtistFragment extends Fragment {
         //After doInBackground, call this method to update the view
         @Override
         protected void onPostExecute(List<Artist> artists) {
-            //If artists is empty or artist is null, display toast
-            //If no artist is found, lets the user know
+            //If artists is null or empty, display toast
+            //If no artist is found, show toast to let user know
             if (artists == null ||artists.isEmpty()) {
                 Context context = getActivity();
 
@@ -175,7 +180,7 @@ public class ArtistFragment extends Fragment {
 
             }
             //If artists is not empty, display results
-            else if (artists != null) {
+            else {
 
                 //Instead of adding to the adapter, I added outside of the fragment life cycle
                 //so that the fragment does not blow away my data on screen rotation.
@@ -185,7 +190,6 @@ public class ArtistFragment extends Fragment {
                 SpotifyStreamerApplication.artists.clear();
                 SpotifyStreamerApplication.artists.addAll(artists);
                 mResultAdapter.notifyDataSetChanged();
-
             }
             super.onPostExecute(artists);
         }
@@ -225,7 +229,6 @@ public class ArtistFragment extends Fragment {
                 return null;
             }
 
-
             return tracks;
         }
 
@@ -240,7 +243,7 @@ public class ArtistFragment extends Fragment {
                 Toast.makeText(context, R.string.track_toast_message, Toast.LENGTH_LONG).show();
             }
             //If trackListHolder is not empty, display results
-            else if(tracks.tracks != null) {
+            else  {
 
                 //Instead of adding to the adapter, I added outside of the fragment life cycle
                 //so that the fragment does not blow away my data on screen rotation.
@@ -254,7 +257,6 @@ public class ArtistFragment extends Fragment {
                 SpotifyStreamerApplication.ottoBus.post(new NewTopTenTracksEvents());
             }
             super.onPostExecute(tracks);
-
         }
     }
 

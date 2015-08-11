@@ -6,6 +6,9 @@
     <!--Editable text search hint-->
     <string name="search_hint">Search Artist</string>
 
+    <!--Toast message if no internet connection-->
+    <string name="internet_toast_message">No internet connectivity found</string>
+
     <!--Toast message if no artist is found-->
     <string name="toast_message">Please Redefine your Search</string>
 

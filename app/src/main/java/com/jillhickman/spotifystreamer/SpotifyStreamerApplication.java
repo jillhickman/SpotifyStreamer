@@ -1,6 +1,9 @@
 package com.jillhickman.spotifystreamer;
 
 import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,14 @@ public class SpotifyStreamerApplication extends Application{
         //This is called before the onCreateView in the main activity
         super.onCreate();
         initialize();
+    }
+
+    //Check for network connectivity.
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
 
